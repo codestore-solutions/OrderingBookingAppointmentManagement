@@ -8,11 +8,12 @@ namespace EntityLayer.Models
 {
     public class WishList
     {
-        public Guid WishListId { get; set; }
+        public Guid Id { get; set; }
         public Guid ProductId { get; set; }
         public Guid UserId { get; set; }
-        public double Price { get; set; }   // as prices may vary with time
+        public double Price { get; set; }                                              // as prices may vary with time
         public DateTime? CreatedDateTime { get; set; } = DateTime.Now;                // might be helpful in logging to fetch the insights 
+       // public List<Product> ProductIds { get; set; }
 
     }
 }

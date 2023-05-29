@@ -9,8 +9,7 @@ namespace OrderingBookingModule.CustomActionFilter
         {
             if(context.ModelState.IsValid==false) 
             { 
-                context.Result=new BadRequestResult();
-            
+                context.Result=new BadRequestResult();            
             }
         }
     }

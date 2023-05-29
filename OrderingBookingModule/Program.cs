@@ -1,13 +1,12 @@
 using BuisnessLogicLayer.IServices;
-using BuisnessLogicLayer.MiddleWares;
+using BuisnessLogicLayer.Mappings;
 using BuisnessLogicLayer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.IRepository;
 using DataAccessLayer.Repository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Configuration;
+using OrderingBookingModule.MiddleWares;
 using Serilog;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace OrderingBookingModule
 {
@@ -38,7 +37,8 @@ namespace OrderingBookingModule
             options.UseSqlServer("name=ConnectionStrings:OrderingBookingConnectionString"));
            
             builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddScoped<IWishListService, WishListService>();    
+            builder.Services.AddScoped<IWishListService, WishListService>();
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
             builder.Services.AddScoped<IOrderLineItemsService, OrderLineItemsService>();
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
             builder.Services.AddCors(options =>

@@ -16,26 +16,33 @@ namespace OrderingBookingModule.Controllers
             this.wishListService = wishListService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetAllProductInWishList()
+        // GET: /api/wishList/userId/1
+        [HttpGet("userId/{id:Guid}")]
+        public async Task<ActionResult> GetAllProductInWishList([FromRoute] Guid id)
         {
-            return Ok(await wishListService.GetAllProductAsync());
+            return Ok(await wishListService.GetAllProductAsync(id));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddProductsInWishList(AddProductInWishList addProductInWishList)
+        //POST: /api/wishList/addProduct
+        [HttpPost("addProduct")]
+        public async Task<IActionResult> AddProductsInWishList([FromBody] AddWishListRequestDto addWishListRequest)
         {
-            return Ok(await wishListService.AddProductInWishListAsync(addProductInWishList));
+            var product = await wishListService.AddProductInWishListAsync(addWishListRequest);
+            if(product == null)
+            {
+                return Ok(" Already Added in your WishList ");
+            }
+            return Ok(product);
         }
 
-        [HttpDelete]
-        [Route("{productId}")]
-        public async Task<IActionResult> DeleteProductFromWishList(Guid productId)
+        // DELETE : /api/wishList/productId/1
+        [HttpDelete("productId/{id}")]
+        public async Task<IActionResult> DeleteProductFromWishList([FromRoute] Guid id)
         {
-            var deletedProduct = await wishListService.DeleteProductFromWishListAsync(productId);
+            var deletedProduct = await wishListService.DeleteProductFromWishListAsync(id);
             if (deletedProduct == null)
             {
-                return BadRequest("Enter Valid ProductId");
+                return NotFound("productId can't exist");
             }
             return Ok(deletedProduct);
         }

@@ -25,6 +25,7 @@ namespace BuisnessLogicLayer.Services
                 OrderQty = order.OrderQty         
             };
            await unitOfWork.OrderRepository.AddAsync(newOrder);
+           await unitOfWork.SaveAsync();
            return newOrder;    
         }
         public async Task<Order> DeleteOrderAsync(Guid id)

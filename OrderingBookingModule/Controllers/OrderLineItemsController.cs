@@ -1,5 +1,4 @@
 ﻿using BuisnessLogicLayer.IServices;
-using DataAccessLayer.IRepository;
 using EntityLayer;
 using Microsoft.AspNetCore.Mvc;
 using OrderingBookingModule.CustomActionFilter;
@@ -16,6 +15,7 @@ namespace OrderingBookingModule.Controllers
             this.orderLineItemsService = orderLineItemsService;
         }
 
+        // GET: /api/orderLineItems
         [HttpGet]
         public async Task<IActionResult> GetAllProductInsideOrderLine()
         {

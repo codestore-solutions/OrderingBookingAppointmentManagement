@@ -1,12 +1,13 @@
 ﻿using EntityLayer;
+using EntityLayer.Dto;
 using EntityLayer.Models;
 
 namespace BuisnessLogicLayer.IServices
 {
     public interface IWishListService
     {
-        Task<IEnumerable<WishList>> GetAllProductAsync();
-        Task<WishList> AddProductInWishListAsync(AddProductInWishList wishList);
+        Task<GetWishListResponse> GetAllProductAsync(Guid userId);
+        Task<WishListResponseDto> AddProductInWishListAsync(AddWishListRequestDto wishList);
         Task<WishList> DeleteProductFromWishListAsync(Guid id);
     }
 }

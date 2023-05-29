@@ -11,6 +11,7 @@ namespace DataAccessLayer.IRepository
         IEnumerable<T> Find(Expression<Func<T, bool>> expression);
         IQueryable<T> AsQueryable();
         T FindInList(Func<T, bool> expression);
-
+        Task<IQueryable<T>> AsQueryableAsync();
+        public void Delete(T entity);
     }
 }

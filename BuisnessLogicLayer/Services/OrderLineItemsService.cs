@@ -2,11 +2,7 @@
 using DataAccessLayer.IRepository;
 using EntityLayer;
 using EntityLayer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BuisnessLogicLayer.Services
 {
@@ -40,8 +36,10 @@ namespace BuisnessLogicLayer.Services
         }
 
         public async Task<IEnumerable<OrderLineItems>> GetAllProductAsync()
-        {
-            return await unitOfWork.OrderLineRepository.GetAllAsync();
+        { 
+           var listOfOrders= await unitOfWork.OrderLineRepository.GetAllAsync();
+           //logger.LogInformation("GetAsync() execution time: {ExecutionTime}ms", listOfOrders);
+           return listOfOrders;
         }
 
         public async Task<OrderLineItems> UpdateProductQuantityAsync(Guid productId, UpdatePrdouctQuantity updateProduct)

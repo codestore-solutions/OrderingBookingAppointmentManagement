@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Data;
 using DataAccessLayer.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 
 
@@ -33,6 +34,16 @@ namespace DataAccessLayer.Repository
             return entity;
         }
 
+        public void Delete(T entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            _dbSet.Remove(entity);
+        }
+
+
         public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
         {
             return _dbSet.Where(expression);
@@ -40,7 +51,6 @@ namespace DataAccessLayer.Repository
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dbSet.AsNoTracking().ToListAsync();
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
@@ -59,5 +69,12 @@ namespace DataAccessLayer.Repository
         {
             return _dbSet.FirstOrDefault(expression);
         }
+        public async Task<IQueryable<T>> AsQueryableAsync()
+        {
+            return await Task.FromResult(_dbSet.AsQueryable());
+        }
+
+
     }
+
 }
