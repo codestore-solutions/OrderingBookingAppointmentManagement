@@ -4,6 +4,7 @@ using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    partial class OrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230601052454_changes in cartItems Table2")]
+    partial class changesincartItemsTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,12 +43,6 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("EntityLayer.Models.CartItems", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
                     b.Property<long>("CartId")
                         .HasColumnType("bigint");
 
@@ -55,9 +52,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<long>("Quantity")
                         .HasColumnType("bigint");
 
-                    b.HasKey("Id");
+                    b.HasKey("CartId", "ProductId");
 
-                    b.HasIndex("CartId");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("CartItems");
                 });
@@ -113,11 +110,11 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            PaymentId = new Guid("45220067-5341-4886-ab66-c5926721cd77")
+                            PaymentId = new Guid("285f7625-f81e-4e61-9463-d8ca1be8660f")
                         },
                         new
                         {
-                            PaymentId = new Guid("2e85207d-55f8-444f-9842-5dd188d47d2b")
+                            PaymentId = new Guid("fe9908d1-7684-4ad7-a225-0af3eee39e00")
                         });
                 });
 
@@ -130,10 +127,9 @@ namespace DataAccessLayer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Price")
+                    b.Property<int?>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -161,19 +157,19 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingMethodId = new Guid("9ef8575e-70a1-4605-b35f-7b90ef55c17f"),
+                            ShippingMethodId = new Guid("41ace760-0406-47ce-99b6-e739c3db889f"),
                             Name = "Fast Delivery",
                             price = 199f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("9ca051b1-1cc8-4af1-a411-4fe0f1d44c19"),
+                            ShippingMethodId = new Guid("29933aa2-4bd6-4061-b3ef-5cdf4c1d7ef6"),
                             Name = "Normal Delivery",
                             price = 49f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("99b90810-1ee4-4c99-a1e8-2ee5f5885821"),
+                            ShippingMethodId = new Guid("fc326abe-79a0-42c2-b864-948e8c6140ad"),
                             Name = "Self pickup",
                             price = 0f
                         });
@@ -192,11 +188,11 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingAddressId = new Guid("27b65daa-265e-48fa-aedf-4d863ea27d61")
+                            ShippingAddressId = new Guid("d3fa79f9-7a28-4819-8a22-11f9fd5346e3")
                         },
                         new
                         {
-                            ShippingAddressId = new Guid("b473110d-d8a0-409d-9c37-47ab6df1ed11")
+                            ShippingAddressId = new Guid("75840331-e2f4-4001-b068-dfdf849e13e1")
                         });
                 });
 
@@ -253,10 +249,23 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EntityLayer.Models.Product", "Product")
+                        .WithMany("CartItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Cart");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("EntityLayer.Models.Cart", b =>
+                {
+                    b.Navigation("CartItems");
+                });
+
+            modelBuilder.Entity("EntityLayer.Models.Product", b =>
                 {
                     b.Navigation("CartItems");
                 });

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20230523063443_change names")]
-    partial class changenames
+    [Migration("20230601174336_new ")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,13 +27,42 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("EntityLayer.Models.Cart", b =>
                 {
-                    b.Property<Guid>("CartId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
-                    b.HasKey("CartId");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Cart");
+                });
+
+            modelBuilder.Entity("EntityLayer.Models.CartItems", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CartId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("EntityLayer.Models.Order", b =>
@@ -74,26 +103,6 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("EntityLayer.Models.OrderLineItems", b =>
-                {
-                    b.Property<Guid>("OrderLineItemsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("ProductPrice")
-                        .HasColumnType("float");
-
-                    b.Property<int>("ProductQuantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderLineItemsId");
-
-                    b.ToTable("OrderLines");
-                });
-
             modelBuilder.Entity("EntityLayer.Models.Payment", b =>
                 {
                     b.Property<Guid>("PaymentId")
@@ -107,48 +116,32 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            PaymentId = new Guid("79cfae30-87cc-46b0-a89c-32c198631c70")
+                            PaymentId = new Guid("45220067-5341-4886-ab66-c5926721cd77")
                         },
                         new
                         {
-                            PaymentId = new Guid("81bc3942-83b1-4282-9e72-4f0c999a3a85")
+                            PaymentId = new Guid("2e85207d-55f8-444f-9842-5dd188d47d2b")
                         });
                 });
 
             modelBuilder.Entity("EntityLayer.Models.Product", b =>
                 {
-                    b.Property<Guid>("ProductId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("OrderLineItemsId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<float>("ProductPrice")
-                        .HasColumnType("real");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductQuantity")
+                    b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("Id");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductId = new Guid("d17aa43f-f3f5-4608-afcb-676934e24eb6"),
-                            OrderLineItemsId = new Guid("1ab5c72a-b269-492b-83b7-d216dafd18fe"),
-                            ProductPrice = 24999f,
-                            ProductQuantity = 1
-                        },
-                        new
-                        {
-                            ProductId = new Guid("d9252eae-e632-41d5-b514-538ade203252"),
-                            OrderLineItemsId = new Guid("7f03c2e7-47b5-4ff0-a685-8e63f4ffc910"),
-                            ProductPrice = 9999f,
-                            ProductQuantity = 1
-                        });
                 });
 
             modelBuilder.Entity("EntityLayer.Models.ShippingMethod", b =>
@@ -171,19 +164,19 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingMethodId = new Guid("50860922-b382-4e1d-955b-ba2c4a1ce73b"),
+                            ShippingMethodId = new Guid("9ef8575e-70a1-4605-b35f-7b90ef55c17f"),
                             Name = "Fast Delivery",
                             price = 199f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("704e504a-7798-4cfd-9d4a-eb33fe65e3a8"),
+                            ShippingMethodId = new Guid("9ca051b1-1cc8-4af1-a411-4fe0f1d44c19"),
                             Name = "Normal Delivery",
                             price = 49f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("17190837-8f82-4e31-870a-d12c6c091766"),
+                            ShippingMethodId = new Guid("99b90810-1ee4-4c99-a1e8-2ee5f5885821"),
                             Name = "Self pickup",
                             price = 0f
                         });
@@ -202,19 +195,21 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingAddressId = new Guid("58cfcf45-6ff3-4115-a651-c68bffa9cb44")
+                            ShippingAddressId = new Guid("27b65daa-265e-48fa-aedf-4d863ea27d61")
                         },
                         new
                         {
-                            ShippingAddressId = new Guid("d6b3ae4b-095e-4909-912b-d2ef09591af8")
+                            ShippingAddressId = new Guid("b473110d-d8a0-409d-9c37-47ab6df1ed11")
                         });
                 });
 
             modelBuilder.Entity("EntityLayer.Models.User", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserId"));
 
                     b.HasKey("UserId");
 
@@ -223,35 +218,50 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("8a614a91-cca1-4584-a66d-daf79789243a")
+                            UserId = 21L
                         },
                         new
                         {
-                            UserId = new Guid("d6c496a9-783f-4beb-a619-578b78d3b9ee")
+                            UserId = 22L
                         });
                 });
 
             modelBuilder.Entity("EntityLayer.Models.WishList", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.ToTable("Wishlists");
+                });
+
+            modelBuilder.Entity("EntityLayer.Models.CartItems", b =>
+                {
+                    b.HasOne("EntityLayer.Models.Cart", "Cart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+                });
+
+            modelBuilder.Entity("EntityLayer.Models.Cart", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 #pragma warning restore 612, 618
         }

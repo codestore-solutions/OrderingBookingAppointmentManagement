@@ -6,8 +6,8 @@ namespace BuisnessLogicLayer.IServices
 {
     public interface IWishListService
     {
-        Task<GetWishListResponse> GetAllProductAsync(Guid userId);
+        Task<GetWishListResponse> GetAllProductAsync(long userId);
         Task<WishListResponseDto> AddProductInWishListAsync(AddWishListRequestDto wishList);
-        Task<WishList> DeleteProductFromWishListAsync(Guid id);
+        Task<WishList> DeleteProductFromWishListAsync(long userId, long productId);
     }
 }

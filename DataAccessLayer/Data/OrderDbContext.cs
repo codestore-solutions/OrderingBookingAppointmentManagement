@@ -10,19 +10,22 @@ namespace DataAccessLayer.Data
             
         }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderLineItems> OrderLines { get; set; }
+        public DbSet<Cart> Cart { get; set; }
+        public DbSet<CartItems> CartItems { get; set; }
         public DbSet<WishList> Wishlists { get; set; }
         public DbSet<ShippingMethod> ShippingMethods { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Cart> Cart { get; set; }
         public DbSet<Payment> Payment { get; set; }
         public DbSet<ShippngAddress> ShippngAddress { get; set; }
         public DbSet<User> User { get; set; }
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CartItems>()
+                .HasOne(ci => ci.Cart)
+                .WithMany(c => c.CartItems)
+                .HasForeignKey(ci => ci.CartId);
 
             var shippingMethods = new List<ShippingMethod>
             {
@@ -46,27 +49,6 @@ namespace DataAccessLayer.Data
                 }
             };
 
-            modelBuilder.Entity<ShippingMethod>().HasData(shippingMethods);
-
-            var products = new List<Product>
-            {
-                new Product
-                {
-                    ProductId = Guid.NewGuid(),
-                    OrderLineItemsId = Guid.NewGuid(),
-                    ProductQuantity = 1,
-                    ProductPrice=24999
-                } ,
-                new Product
-                {
-                    ProductId = Guid.NewGuid(),
-                    ProductQuantity=1,
-                    OrderLineItemsId=Guid.NewGuid(),
-                    ProductPrice=9999
-                }
-            };
-            modelBuilder.Entity<Product>().HasData(products);
-
             var shippingAddress = new List<ShippngAddress>
             {
                 new ShippngAddress
@@ -78,20 +60,18 @@ namespace DataAccessLayer.Data
                     ShippingAddressId=Guid.NewGuid()
                 }
             };
-            modelBuilder.Entity<ShippngAddress>().HasData(shippingAddress);
 
             var users = new List<User>
             {
                 new User
                 {
-                    UserId=Guid.NewGuid(),
+                    UserId=21,
                 },
                  new User
                 {
-                    UserId=Guid.NewGuid(),
+                    UserId=22,
                 },
             };
-            modelBuilder.Entity<User>().HasData(users);
 
             var payments = new List<Payment>
             {
@@ -104,6 +84,10 @@ namespace DataAccessLayer.Data
                     PaymentId=Guid.NewGuid(),
                 }
             };
+
+            modelBuilder.Entity<ShippingMethod>().HasData(shippingMethods);
+            modelBuilder.Entity<ShippngAddress>().HasData(shippingAddress);
+            modelBuilder.Entity<User>().HasData(users);
             modelBuilder.Entity<Payment>().HasData(payments);
         }
 

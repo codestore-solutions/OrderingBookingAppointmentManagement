@@ -4,6 +4,7 @@ using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    partial class OrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230601124149_changes in cartItems Table4")]
+    partial class changesincartItemsTable4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,11 +116,11 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            PaymentId = new Guid("45220067-5341-4886-ab66-c5926721cd77")
+                            PaymentId = new Guid("127bf165-6891-4e0d-b416-798324af7f77")
                         },
                         new
                         {
-                            PaymentId = new Guid("2e85207d-55f8-444f-9842-5dd188d47d2b")
+                            PaymentId = new Guid("2aca555a-f357-40ae-baa5-d19e6f80d5cc")
                         });
                 });
 
@@ -161,19 +164,19 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingMethodId = new Guid("9ef8575e-70a1-4605-b35f-7b90ef55c17f"),
+                            ShippingMethodId = new Guid("9ac74455-acf2-4360-ae02-641ca2793ff2"),
                             Name = "Fast Delivery",
                             price = 199f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("9ca051b1-1cc8-4af1-a411-4fe0f1d44c19"),
+                            ShippingMethodId = new Guid("2b2d73e7-88e8-4d8c-b023-c92ecc0d02ab"),
                             Name = "Normal Delivery",
                             price = 49f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("99b90810-1ee4-4c99-a1e8-2ee5f5885821"),
+                            ShippingMethodId = new Guid("becb3cfc-de94-4b8e-b658-c87d450e937f"),
                             Name = "Self pickup",
                             price = 0f
                         });
@@ -192,11 +195,11 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingAddressId = new Guid("27b65daa-265e-48fa-aedf-4d863ea27d61")
+                            ShippingAddressId = new Guid("d2ae67a9-ff28-4df1-a234-37f1240b07af")
                         },
                         new
                         {
-                            ShippingAddressId = new Guid("b473110d-d8a0-409d-9c37-47ab6df1ed11")
+                            ShippingAddressId = new Guid("620ff580-53b6-4810-ae3a-a1753c4835f7")
                         });
                 });
 

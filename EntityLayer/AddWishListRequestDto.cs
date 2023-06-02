@@ -10,10 +10,10 @@ namespace EntityLayer
     public class AddWishListRequestDto
     {
         [Required]
-        public Guid ProductId { get; set; }
+        public long ProductId { get; set; }
 
         [Required]
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
         
     }
 }

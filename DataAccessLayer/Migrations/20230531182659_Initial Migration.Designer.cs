@@ -4,6 +4,7 @@ using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    partial class OrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230531182659_Initial Migration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,6 +25,21 @@ namespace DataAccessLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CartItemsProduct", b =>
+                {
+                    b.Property<long>("CartItemsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("CartItemsId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("CartItemsProduct");
+                });
+
             modelBuilder.Entity("EntityLayer.Models.Cart", b =>
                 {
                     b.Property<long>("Id")
@@ -29,6 +47,12 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -49,10 +73,10 @@ namespace DataAccessLayer.Migrations
                     b.Property<long>("CartId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ProductId")
+                    b.Property<long>("Quantity")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("Quantity")
+                    b.Property<long>("VarientId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -113,11 +137,11 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            PaymentId = new Guid("45220067-5341-4886-ab66-c5926721cd77")
+                            PaymentId = new Guid("9eb0679f-f8b2-4c96-a8d7-d1ce24930f2b")
                         },
                         new
                         {
-                            PaymentId = new Guid("2e85207d-55f8-444f-9842-5dd188d47d2b")
+                            PaymentId = new Guid("559f5b3e-c39f-4f6d-bf0d-8793af846ffb")
                         });
                 });
 
@@ -133,7 +157,7 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Price")
+                    b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -161,19 +185,19 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingMethodId = new Guid("9ef8575e-70a1-4605-b35f-7b90ef55c17f"),
+                            ShippingMethodId = new Guid("154e55ed-524f-4783-83c2-b3ed730ac270"),
                             Name = "Fast Delivery",
                             price = 199f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("9ca051b1-1cc8-4af1-a411-4fe0f1d44c19"),
+                            ShippingMethodId = new Guid("797e11f9-d2d9-44e6-b6ba-ba0edb928d78"),
                             Name = "Normal Delivery",
                             price = 49f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("99b90810-1ee4-4c99-a1e8-2ee5f5885821"),
+                            ShippingMethodId = new Guid("e1c6f8e1-8453-4a1a-88c4-05a8743dc049"),
                             Name = "Self pickup",
                             price = 0f
                         });
@@ -192,11 +216,11 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingAddressId = new Guid("27b65daa-265e-48fa-aedf-4d863ea27d61")
+                            ShippingAddressId = new Guid("f4ccd450-780f-4205-9dc0-62e5aca90b0b")
                         },
                         new
                         {
-                            ShippingAddressId = new Guid("b473110d-d8a0-409d-9c37-47ab6df1ed11")
+                            ShippingAddressId = new Guid("a886284b-48aa-42de-aa15-6f1c3a08ee55")
                         });
                 });
 
@@ -243,6 +267,21 @@ namespace DataAccessLayer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Wishlists");
+                });
+
+            modelBuilder.Entity("CartItemsProduct", b =>
+                {
+                    b.HasOne("EntityLayer.Models.CartItems", null)
+                        .WithMany()
+                        .HasForeignKey("CartItemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityLayer.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EntityLayer.Models.CartItems", b =>

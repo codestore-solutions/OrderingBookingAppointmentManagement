@@ -11,9 +11,9 @@ namespace BuisnessLogicLayer.IServices
     public interface IOrderService
     {
         Task<IEnumerable<Order>> GetAllOrdersAsync();
-        Task<Order> GetOrderByIdAsync(Guid id);
+        Task<Order> GetOrderByIdAsync(long id);
         Task<Order> CreateNewOrderAsync(CreateNewOrder order);
-        Task<Order> UpdateOrderAsync(Guid id,UpdateOrder order);
-        Task<Order> DeleteOrderAsync(Guid id);
+        Task<Order> UpdateOrderAsync(long id,UpdateOrder order);
+        Task<Order> DeleteOrderAsync(long id);
     }
 }

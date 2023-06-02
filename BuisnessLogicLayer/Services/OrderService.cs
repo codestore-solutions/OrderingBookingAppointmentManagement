@@ -28,7 +28,7 @@ namespace BuisnessLogicLayer.Services
            await unitOfWork.SaveAsync();
            return newOrder;    
         }
-        public async Task<Order> DeleteOrderAsync(Guid id)
+        public async Task<Order> DeleteOrderAsync(long id)
         {
             var deletedOrder= await unitOfWork.OrderRepository.DeleteAsync(id);
             await unitOfWork.SaveAsync();
@@ -40,12 +40,12 @@ namespace BuisnessLogicLayer.Services
             return await unitOfWork.OrderRepository.GetAllAsync();
         }
 
-        public async Task<Order> GetOrderByIdAsync(Guid id)
+        public async Task<Order> GetOrderByIdAsync(long id)
         {
             return await unitOfWork.OrderRepository.GetByIdAsync(id);
         }
 
-        public async Task<Order> UpdateOrderAsync(Guid id, UpdateOrder order)
+        public async Task<Order> UpdateOrderAsync(long id, UpdateOrder order)
         {
             var orderUpdate= await unitOfWork.OrderRepository.GetByIdAsync(id);
             if (orderUpdate != null)

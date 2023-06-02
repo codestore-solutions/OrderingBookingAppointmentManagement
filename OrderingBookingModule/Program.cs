@@ -4,9 +4,13 @@ using BuisnessLogicLayer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.IRepository;
 using DataAccessLayer.Repository;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using OrderingBookingModule.MiddleWares;
 using Serilog;
+using System.Reflection;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace OrderingBookingModule
 {
@@ -28,10 +32,19 @@ namespace OrderingBookingModule
             builder.Logging.AddSerilog(logger);
 
             builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                options.JsonSerializerOptions.WriteIndented = true;
+            });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
 
             builder.Services.AddDbContext<OrderDbContext>(options =>
             options.UseSqlServer("name=ConnectionStrings:OrderingBookingConnectionString"));
@@ -39,7 +52,7 @@ namespace OrderingBookingModule
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IWishListService, WishListService>();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
-            builder.Services.AddScoped<IOrderLineItemsService, OrderLineItemsService>();
+            builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
             builder.Services.AddCors(options =>
             {
@@ -59,6 +72,8 @@ namespace OrderingBookingModule
             {
                 
             }
+
+            app.UseCors("AllowOrigin");
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 

@@ -16,15 +16,33 @@ namespace OrderingBookingModule.Controllers
             this.wishListService = wishListService;
         }
 
-        // GET: /api/wishList/userId/1
-        [HttpGet("userId/{id:Guid}")]
-        public async Task<ActionResult> GetAllProductInWishList([FromRoute] Guid id)
+        /// <summary>
+        /// Get list of all products in wishlist
+        /// </summary>
+        /// <param name="userId">UserId</param>
+        /// <returns></returns>
+        // GET: /api/wishList?userId=1001
+        [HttpGet]
+        public async Task<ActionResult> GetAllProductsInWishList([FromQuery] long userId)
         {
-            return Ok(await wishListService.GetAllProductAsync(id));
+            return Ok(await wishListService.GetAllProductAsync(userId));
         }
 
-        //POST: /api/wishList/addProduct
-        [HttpPost("addProduct")]
+        /// <summary>
+        /// Add products into wishlist 
+        /// </summary>
+        /// <param name="addWishListRequest"></param>
+        /// Sample request:
+        ///
+        ///     POST /api/wishList/add
+        ///     {
+        ///        "productId"    : long
+        ///        "userId"   : long,
+        ///     }
+        /// </remarks>
+        /// <returns></returns>
+        //POST: /api/wishList/addItem
+        [HttpPost("add")]
         public async Task<IActionResult> AddProductsInWishList([FromBody] AddWishListRequestDto addWishListRequest)
         {
             var product = await wishListService.AddProductInWishListAsync(addWishListRequest);
@@ -35,11 +53,17 @@ namespace OrderingBookingModule.Controllers
             return Ok(product);
         }
 
-        // DELETE : /api/wishList/productId/1
-        [HttpDelete("productId/{id}")]
-        public async Task<IActionResult> DeleteProductFromWishList([FromRoute] Guid id)
+        /// <summary>
+        /// Remove products from wishlist
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        // DELETE : /api/wishList?userId=1001&productId=3001
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteProductFromWishList([FromQuery] long userId, [FromQuery] long productId)
         {
-            var deletedProduct = await wishListService.DeleteProductFromWishListAsync(id);
+            var deletedProduct = await wishListService.DeleteProductFromWishListAsync(userId, productId);
             if (deletedProduct == null)
             {
                 return NotFound("productId can't exist");

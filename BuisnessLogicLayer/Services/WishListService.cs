@@ -18,6 +18,20 @@ namespace BuisnessLogicLayer.Services
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
+
+        public async Task<GetWishListResponse> GetAllProductAsync(long userId)
+        {
+            // Get WishList of a specific user through its userId
+            var allItems = unitOfWork.WishListRepository.Find((w => w.UserId == userId));
+            var getResponseObject = new GetWishListResponse();
+            var productIds = new List<string>();
+            foreach (var item in allItems)
+            {
+                productIds.Add(item.ProductId.ToString());
+            }
+            getResponseObject.ProductIds = productIds;
+            return getResponseObject;
+        }
         public async Task<WishListResponseDto> AddProductInWishListAsync(AddWishListRequestDto addWishListRequest)
         {
             // Check if the user and product exist\
@@ -32,7 +46,6 @@ namespace BuisnessLogicLayer.Services
             var newAddedItem = new WishList()
             {
                 CreatedDateTime      = DateTime.Now,
-               // Price = It'll come from product table 
                 ProductId            = addWishListRequest.ProductId,
                 UserId               = addWishListRequest.UserId,
             };
@@ -40,30 +53,17 @@ namespace BuisnessLogicLayer.Services
             await unitOfWork.SaveAsync();
             return mapper.Map<WishListResponseDto>(newAddedItem);
         }
-
-        public async Task<WishList> DeleteProductFromWishListAsync(Guid productId)
+        public async Task<WishList> DeleteProductFromWishListAsync(long userId, long productId)
         {          
-            var itemToBeDeleted = unitOfWork.WishListRepository.FindInList(p => p.ProductId == productId);
+            var itemToBeDeleted = unitOfWork.WishListRepository.FindInList(p => p.UserId == userId && p.ProductId == productId);
+            if(itemToBeDeleted == null)
+            {
+                return null;
+            }
             await unitOfWork.WishListRepository.DeleteAsync(itemToBeDeleted.Id);
             await unitOfWork.SaveAsync();  
             return itemToBeDeleted;
         }
-
-        public async Task<GetWishListResponse> GetAllProductAsync(Guid userId)
-        {
-            // Get WishList of a specific user through its userId
-            var allItems = unitOfWork.WishListRepository.Find((w => w.UserId == userId));
-            var getResponseObject = new GetWishListResponse();
-            var productIds        = new List<string>();
-            foreach (var item in allItems)
-            {
-                 productIds.Add(item.ProductId.ToString());   
-            }
-            getResponseObject.ProductIds = productIds;
-            return getResponseObject;
-        }
-
-
 
     }
 }

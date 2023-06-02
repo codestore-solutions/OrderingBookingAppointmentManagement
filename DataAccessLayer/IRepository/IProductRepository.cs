@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EntityLayer.Dto
+namespace DataAccessLayer.IRepository
 {
-    public class WishListResponseDto
+    public interface IProductRepository : IGenericRepository<Product>
     {
-        public long UserId { get; set; }
-        public long ProductId { get; set; }
     }
 }

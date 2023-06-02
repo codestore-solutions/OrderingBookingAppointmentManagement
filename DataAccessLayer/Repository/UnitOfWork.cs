@@ -15,23 +15,37 @@ namespace DataAccessLayer.Repository
         public UnitOfWork(OrderDbContext dbContext) 
         {
             OrderRepository=new OrderRepository(dbContext);
-            OrderLineRepository = new OrderLineRepository(dbContext);
-            WishListRepository=new WishListRepository(dbContext);
+            CartRepository = new CartRepository(dbContext);
+            WishListRepository =new WishListRepository(dbContext);
+            ProductRepository = new ProductRepository(dbContext);
+            CartItemsRepository = new CartItemsRepository(dbContext);
             this.dbContext = dbContext;
         }
-
         public IOrderRepository OrderRepository
-        {
-            get;
-            private set;
-        }
-        public IOrderLineRepository OrderLineRepository
         {
             get;
             private set;
         }
 
         public IWishListRepository WishListRepository
+        {
+            get;
+            private set;
+        }
+
+        public IProductRepository ProductRepository
+        {
+            get;
+            private set;
+        }
+
+        public ICartRepository CartRepository
+        {
+            get;
+            private set;
+        }
+
+        public ICartItemsRepository CartItemsRepository
         {
             get;
             private set;

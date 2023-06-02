@@ -22,7 +22,7 @@ namespace OrderingBookingModule.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrderById([FromRoute] Guid id)
+        public async Task<IActionResult> GetOrderById([FromRoute] long id)
         {
             var order = await orderService.GetOrderByIdAsync(id);
             if (order == null)
@@ -40,7 +40,7 @@ namespace OrderingBookingModule.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(Guid id,UpdateOrder order)
+        public async Task<IActionResult> UpdateOrder(long id,UpdateOrder order)
         {
             var updatedOrder = await orderService.UpdateOrderAsync(id, order);
 
@@ -53,7 +53,7 @@ namespace OrderingBookingModule.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(Guid id)
+        public async Task<IActionResult> DeleteOrder(long id)
         {
             var order=await orderService.DeleteOrderAsync(id);
             if(order == null)

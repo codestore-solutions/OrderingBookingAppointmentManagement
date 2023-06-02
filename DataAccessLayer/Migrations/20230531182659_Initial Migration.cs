@@ -17,25 +17,15 @@ namespace DataAccessLayer.Migrations
                 name: "Cart",
                 columns: table => new
                 {
-                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cart", x => x.CartId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderLines",
-                columns: table => new
-                {
-                    OrderLineItemsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductPrice = table.Column<double>(type: "float", nullable: false),
-                    ProductQuantity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderLines", x => x.OrderLineItemsId);
+                    table.PrimaryKey("PK_Cart", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,14 +63,14 @@ namespace DataAccessLayer.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderLineItemsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductPrice = table.Column<float>(type: "real", nullable: false),
-                    ProductQuantity = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductQuantity = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.ProductId);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,7 +101,8 @@ namespace DataAccessLayer.Migrations
                 name: "User",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1")
                 },
                 constraints: table =>
                 {
@@ -122,15 +113,60 @@ namespace DataAccessLayer.Migrations
                 name: "Wishlists",
                 columns: table => new
                 {
-                    WishListId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Wishlists", x => x.WishListId);
+                    table.PrimaryKey("PK_Wishlists", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CartItems",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CartId = table.Column<long>(type: "bigint", nullable: false),
+                    VarientId = table.Column<long>(type: "bigint", nullable: false),
+                    Quantity = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CartItems_Cart_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Cart",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CartItemsProduct",
+                columns: table => new
+                {
+                    CartItemsId = table.Column<long>(type: "bigint", nullable: false),
+                    ProductsId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItemsProduct", x => new { x.CartItemsId, x.ProductsId });
+                    table.ForeignKey(
+                        name: "FK_CartItemsProduct_CartItems_CartItemsId",
+                        column: x => x.CartItemsId,
+                        principalTable: "CartItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CartItemsProduct_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -138,17 +174,8 @@ namespace DataAccessLayer.Migrations
                 column: "PaymentId",
                 values: new object[]
                 {
-                    new Guid("313d6fe1-0cb0-47d7-83df-e44802c4d392"),
-                    new Guid("32ae8b46-49e0-49aa-a335-677cd0d699b7")
-                });
-
-            migrationBuilder.InsertData(
-                table: "Products",
-                columns: new[] { "ProductId", "OrderLineItemsId", "ProductPrice", "ProductQuantity" },
-                values: new object[,]
-                {
-                    { new Guid("6ee21223-f486-4a8d-9446-ec6792b8d439"), new Guid("c9cb52b8-d155-4125-a504-5b31a60b0c63"), 24999f, 1 },
-                    { new Guid("efe640a6-39c7-40ce-b7f1-ed24d37dea0b"), new Guid("eaf6ec93-2abe-4df1-964f-c57614b33c94"), 9999f, 1 }
+                    new Guid("559f5b3e-c39f-4f6d-bf0d-8793af846ffb"),
+                    new Guid("9eb0679f-f8b2-4c96-a8d7-d1ce24930f2b")
                 });
 
             migrationBuilder.InsertData(
@@ -156,9 +183,9 @@ namespace DataAccessLayer.Migrations
                 columns: new[] { "ShippingMethodId", "Name", "price" },
                 values: new object[,]
                 {
-                    { new Guid("2d21930f-f418-4e4b-acdc-b90cddcf2d0f"), "Self pickup", 0f },
-                    { new Guid("c2335dc0-5d37-46e3-979f-13951f814d4b"), "Normal Delivery", 49f },
-                    { new Guid("c94bcad8-4825-4016-a48d-70c56346e558"), "Fast Delivery", 199f }
+                    { new Guid("154e55ed-524f-4783-83c2-b3ed730ac270"), "Fast Delivery", 199f },
+                    { new Guid("797e11f9-d2d9-44e6-b6ba-ba0edb928d78"), "Normal Delivery", 49f },
+                    { new Guid("e1c6f8e1-8453-4a1a-88c4-05a8743dc049"), "Self pickup", 0f }
                 });
 
             migrationBuilder.InsertData(
@@ -166,8 +193,8 @@ namespace DataAccessLayer.Migrations
                 column: "ShippingAddressId",
                 values: new object[]
                 {
-                    new Guid("488f4dfb-aa3b-4b55-9b91-be558a02d0fa"),
-                    new Guid("68dbd37c-ea65-48c8-95e3-ad8dd948cb8a")
+                    new Guid("a886284b-48aa-42de-aa15-6f1c3a08ee55"),
+                    new Guid("f4ccd450-780f-4205-9dc0-62e5aca90b0b")
                 });
 
             migrationBuilder.InsertData(
@@ -175,28 +202,32 @@ namespace DataAccessLayer.Migrations
                 column: "UserId",
                 values: new object[]
                 {
-                    new Guid("8a871cc3-df68-49b6-b0d9-5a70d3f2111c"),
-                    new Guid("931a9eaa-1080-4b88-aa8d-46d394086caa")
+                    21L,
+                    22L
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_CartId",
+                table: "CartItems",
+                column: "CartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItemsProduct_ProductsId",
+                table: "CartItemsProduct",
+                column: "ProductsId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Cart");
-
-            migrationBuilder.DropTable(
-                name: "OrderLines");
+                name: "CartItemsProduct");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Payment");
-
-            migrationBuilder.DropTable(
-                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "ShippingMethods");
@@ -209,6 +240,15 @@ namespace DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Wishlists");
+
+            migrationBuilder.DropTable(
+                name: "CartItems");
+
+            migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Cart");
         }
     }
 }

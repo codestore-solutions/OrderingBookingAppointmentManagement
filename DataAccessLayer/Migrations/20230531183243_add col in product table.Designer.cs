@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20230509063047_Initial Migration")]
-    partial class InitialMigration
+    [Migration("20230531183243_add col in product table")]
+    partial class addcolinproducttable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,15 +25,65 @@ namespace DataAccessLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CartItemsProduct", b =>
+                {
+                    b.Property<long>("CartItemsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("CartItemsId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("CartItemsProduct");
+                });
+
             modelBuilder.Entity("EntityLayer.Models.Cart", b =>
                 {
-                    b.Property<Guid>("CartId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
-                    b.HasKey("CartId");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Cart");
+                });
+
+            modelBuilder.Entity("EntityLayer.Models.CartItems", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CartId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("VarientId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("EntityLayer.Models.Order", b =>
@@ -74,26 +124,6 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("EntityLayer.Models.OrderLineItems", b =>
-                {
-                    b.Property<Guid>("OrderLineItemsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("ProductPrice")
-                        .HasColumnType("float");
-
-                    b.Property<int>("ProductQuantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderLineItemsId");
-
-                    b.ToTable("OrderLines");
-                });
-
             modelBuilder.Entity("EntityLayer.Models.Payment", b =>
                 {
                     b.Property<Guid>("PaymentId")
@@ -107,48 +137,33 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            PaymentId = new Guid("313d6fe1-0cb0-47d7-83df-e44802c4d392")
+                            PaymentId = new Guid("6be51dbb-9856-43a8-b1ed-8dbcd7ac056c")
                         },
                         new
                         {
-                            PaymentId = new Guid("32ae8b46-49e0-49aa-a335-677cd0d699b7")
+                            PaymentId = new Guid("a7f89a82-be9d-4e08-be74-f3cff66a5e8d")
                         });
                 });
 
             modelBuilder.Entity("EntityLayer.Models.Product", b =>
                 {
-                    b.Property<Guid>("ProductId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("OrderLineItemsId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<float>("ProductPrice")
-                        .HasColumnType("real");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductQuantity")
-                        .HasColumnType("int");
+                    b.Property<string>("Price")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("Id");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductId = new Guid("6ee21223-f486-4a8d-9446-ec6792b8d439"),
-                            OrderLineItemsId = new Guid("c9cb52b8-d155-4125-a504-5b31a60b0c63"),
-                            ProductPrice = 24999f,
-                            ProductQuantity = 1
-                        },
-                        new
-                        {
-                            ProductId = new Guid("efe640a6-39c7-40ce-b7f1-ed24d37dea0b"),
-                            OrderLineItemsId = new Guid("eaf6ec93-2abe-4df1-964f-c57614b33c94"),
-                            ProductPrice = 9999f,
-                            ProductQuantity = 1
-                        });
                 });
 
             modelBuilder.Entity("EntityLayer.Models.ShippingMethod", b =>
@@ -171,19 +186,19 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingMethodId = new Guid("c94bcad8-4825-4016-a48d-70c56346e558"),
+                            ShippingMethodId = new Guid("6c4f6d79-425b-41b1-aeca-887aeae925a3"),
                             Name = "Fast Delivery",
                             price = 199f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("c2335dc0-5d37-46e3-979f-13951f814d4b"),
+                            ShippingMethodId = new Guid("ec82e611-00f3-4e7e-bb98-18a345d52b29"),
                             Name = "Normal Delivery",
                             price = 49f
                         },
                         new
                         {
-                            ShippingMethodId = new Guid("2d21930f-f418-4e4b-acdc-b90cddcf2d0f"),
+                            ShippingMethodId = new Guid("670a83bb-6350-4324-bf53-8bee8c081472"),
                             Name = "Self pickup",
                             price = 0f
                         });
@@ -202,19 +217,21 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            ShippingAddressId = new Guid("68dbd37c-ea65-48c8-95e3-ad8dd948cb8a")
+                            ShippingAddressId = new Guid("17d209c7-514f-417f-a81e-8ae76b1557cb")
                         },
                         new
                         {
-                            ShippingAddressId = new Guid("488f4dfb-aa3b-4b55-9b91-be558a02d0fa")
+                            ShippingAddressId = new Guid("25e63936-3552-41bb-ac64-07e045f489cd")
                         });
                 });
 
             modelBuilder.Entity("EntityLayer.Models.User", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<long>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserId"));
 
                     b.HasKey("UserId");
 
@@ -223,35 +240,65 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("8a871cc3-df68-49b6-b0d9-5a70d3f2111c")
+                            UserId = 21L
                         },
                         new
                         {
-                            UserId = new Guid("931a9eaa-1080-4b88-aa8d-46d394086caa")
+                            UserId = 22L
                         });
                 });
 
             modelBuilder.Entity("EntityLayer.Models.WishList", b =>
                 {
-                    b.Property<Guid>("WishListId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
-                    b.Property<DateTime>("CreatedDateTime")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("WishListId");
+                    b.HasKey("Id");
 
                     b.ToTable("Wishlists");
+                });
+
+            modelBuilder.Entity("CartItemsProduct", b =>
+                {
+                    b.HasOne("EntityLayer.Models.CartItems", null)
+                        .WithMany()
+                        .HasForeignKey("CartItemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EntityLayer.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EntityLayer.Models.CartItems", b =>
+                {
+                    b.HasOne("EntityLayer.Models.Cart", "Cart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+                });
+
+            modelBuilder.Entity("EntityLayer.Models.Cart", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 #pragma warning restore 612, 618
         }
