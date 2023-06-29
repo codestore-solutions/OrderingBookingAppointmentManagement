@@ -61,6 +61,9 @@ namespace OrderingBooking.BL.Services
                 newOrder.ProductCount = productCount;
                 response.Add(newOrder);
 
+                await unitOfWork.OrderRepository.AddAsync(newOrder);
+                await unitOfWork.SaveAsync();
+
                 var queueObj = new SendOrderToQueueDto();
                 
                 queueObj.orderId    = newOrder.OrderId;
@@ -71,8 +74,6 @@ namespace OrderingBooking.BL.Services
                 var message = new ServiceBusMessage(body);
                 await sender.SendMessageAsync(message);
 
-                await unitOfWork.OrderRepository.AddAsync(newOrder);
-                await unitOfWork.SaveAsync();
             }
 
             return new ResponseDto
@@ -95,6 +96,35 @@ namespace OrderingBooking.BL.Services
                 Message     = StringConstant.SuccessMessage
             };
         }
- 
+        public async Task<ResponseDto> GetOrdersList(List<long> orderIds)
+        {
+            var listOfOrders = new List<Object>();
+
+            foreach (var orderId in orderIds)
+            {
+                var order = await unitOfWork.OrderRepository.GetAll().Include(c=>c.OrderItems).FirstOrDefaultAsync(u => u.OrderId == orderId);
+                if (order == null)
+                {
+                    return new ResponseDto
+                    {
+                        StatusCode = 400,
+                        Success = false,
+                        Data = StringConstant.InvalidInputError,
+                        Message = StringConstant.ErrorMessage
+                    };
+                }
+                listOfOrders.Add(order);
+            }
+
+            return new ResponseDto
+            {
+                Success = true,
+                StatusCode = 200,
+                Data = listOfOrders,
+                Message = StringConstant.SuccessMessage
+            };
+
+        }
+
     }
 }
