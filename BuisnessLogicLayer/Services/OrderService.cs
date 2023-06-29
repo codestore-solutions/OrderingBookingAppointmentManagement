@@ -25,10 +25,9 @@ namespace OrderingBooking.BL.Services
 
         public async Task<ResponseDto> CreateOrderAsync(CreateOrderDto createOrderDto)
         {
-            var connectionString = "";
+            var connectionString = "Endpoint=sb://order-queue-service.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=eGzVejbuuKbdCiekSmrt6nzWxbTSwoeel+ASbMlTSt8=";
             var client = new ServiceBusClient(connectionString);
-            var sendor = client.CreateSender("add-new-order");
-
+            var sender = client.CreateSender("order-data");
 
             var response = new List<Object>();
 
@@ -61,8 +60,17 @@ namespace OrderingBooking.BL.Services
                 }
                 newOrder.ProductCount = productCount;
                 response.Add(newOrder);
-                var body = JsonSerializer.Serialize(newOrder);
-                //var message = 
+
+                var queueObj = new SendOrderToQueueDto();
+                
+                queueObj.orderId    = newOrder.OrderId;
+                queueObj.customerId = createOrderDto.UserId;
+                queueObj.storeId    = ordersforVendors.VendorId;
+                
+                var body = JsonSerializer.Serialize(queueObj);
+                var message = new ServiceBusMessage(body);
+                await sender.SendMessageAsync(message);
+
                 await unitOfWork.OrderRepository.AddAsync(newOrder);
                 await unitOfWork.SaveAsync();
             }
