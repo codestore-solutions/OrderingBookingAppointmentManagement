@@ -1,4 +1,5 @@
 ﻿using Entitites.Dto;
+using EntityLayer.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderingBooking.API.CustomActionFilter;
@@ -32,6 +33,13 @@ namespace OrderingBooking.API.Controllers
         public async Task<IActionResult> GetAllOrdersAsync([FromQuery][Required] long userId)
         {
             return Ok(await orderService.GetAllOrdersAsync(userId));
+        }
+
+        [HttpGet("listOfOrders")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetOrdersList([FromQuery]List<long> orderIds)
+        {
+            return Ok(await orderService.GetOrdersList(orderIds));
         }
     }
 }
