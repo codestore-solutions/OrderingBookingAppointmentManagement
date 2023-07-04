@@ -43,8 +43,7 @@ namespace OrderingBooking.BL.Services
                 newOrder.PaymentId              = createOrderDto.PaymentId;
                 newOrder.VendorId               = ordersforVendors.VendorId;
                 newOrder.DeliveryCharges        = ordersforVendors.DeliveryCharges;
-                
-                
+        
                 foreach (var orderItem in ordersforVendors.OrderItems)
                 {
                     var newOrderItem = new OrderItems();
@@ -68,20 +67,20 @@ namespace OrderingBooking.BL.Services
                 
                 queueObj.orderId    = newOrder.OrderId;
                 queueObj.customerId = createOrderDto.UserId;
-                queueObj.storeId    = ordersforVendors.VendorId;
+                queueObj.vendorId = ordersforVendors.VendorId;
+                queueObj.shippingAddressId = newOrder.ShippingAddressId;
                 
                 var body = JsonSerializer.Serialize(queueObj);
                 var message = new ServiceBusMessage(body);
                 await sender.SendMessageAsync(message);
-
             }
 
             return new ResponseDto
             {
-                StatusCode = 200,
-                Success = true,
-                Data = response,
-                Message = StringConstant.SuccessMessage
+                StatusCode  = 200,
+                Success     = true,
+                Data        = response,
+                Message     = StringConstant.SuccessMessage
             };
         }
         public async Task<ResponseDto> GetAllOrdersAsync(long userId)

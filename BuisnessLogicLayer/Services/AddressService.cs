@@ -4,8 +4,11 @@ using Entitites.Dto;
 using EntityLayer.Common;
 using EntityLayer.Dto;
 using EntityLayer.Models;
+using Microsoft.Azure.Amqp.Encoding;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OrderingBooking.BL.IServices;
+using System.Net.Http;
 
 namespace OrderingBooking.BL.Services
 {
@@ -13,10 +16,14 @@ namespace OrderingBooking.BL.Services
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
-        public AddressService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly HttpClient _httpClient;
+        private readonly string _apiKey;
+        public AddressService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient httpClient, string apiKey)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            _httpClient = httpClient;
+            _apiKey = apiKey;
         }
 
         public async Task<ResponseDto> AddNewAddressAsync(long userId, AddNewAddressDto addressDto)
@@ -154,5 +161,29 @@ namespace OrderingBooking.BL.Services
             };
         }
 
+        public async Task<List<string>> GetNearbyAddresses(double latitude, double longitude, int radius = 30)
+        {
+            var apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude},{longitude}&radius={radius}&key={_apiKey}";
+
+            var response = await _httpClient.GetAsync(apiUrl);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<GeocodingResponse>(content);
+
+            return result?.Results?.ConvertAll(r => r.FormattedAddress);
+        }
+    }
+
+    public class GeocodingResponse
+    {
+        [JsonProperty("results")]
+        public List<Result> Results { get; set; }
+    }
+
+    public class Result
+    {
+        [JsonProperty("formatted_address")]
+        public string FormattedAddress { get; set; }
     }
 }
