@@ -16,14 +16,11 @@ namespace OrderingBooking.BL.Services
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
-        private readonly HttpClient _httpClient;
-        private readonly string _apiKey;
-        public AddressService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient httpClient, string apiKey)
+      
+        public AddressService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
-            _httpClient = httpClient;
-            _apiKey = apiKey;
         }
 
         public async Task<ResponseDto> AddNewAddressAsync(long userId, AddNewAddressDto addressDto)
@@ -161,7 +158,7 @@ namespace OrderingBooking.BL.Services
             };
         }
 
-        public async Task<List<string>> GetNearbyAddresses(double latitude, double longitude, int radius = 30)
+       /* public async Task<List<string>> GetNearbyAddresses(double latitude, double longitude, int radius = 30)
         {
             var apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude},{longitude}&radius={radius}&key={_apiKey}";
 
@@ -172,7 +169,7 @@ namespace OrderingBooking.BL.Services
             var result = JsonConvert.DeserializeObject<GeocodingResponse>(content);
 
             return result?.Results?.ConvertAll(r => r.FormattedAddress);
-        }
+        }*/
     }
 
     public class GeocodingResponse

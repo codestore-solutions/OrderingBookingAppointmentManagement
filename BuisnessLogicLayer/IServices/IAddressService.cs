@@ -17,6 +17,6 @@ namespace OrderingBooking.BL.IServices
        public Task<ResponseDto> DeleteAddressAsync(long shippingAddressId);
        public Task<ResponseDto> UpdateAddressAsync(long shippingAddressId, UpdateAddressDto addressDto);
 
-       public Task<List<string>> GetNearbyAddresses(double latitude, double longitude, int radius = 30);
+   //    public Task<List<string>> GetNearbyAddresses(double latitude, double longitude, int radius = 30);
     }
 }
