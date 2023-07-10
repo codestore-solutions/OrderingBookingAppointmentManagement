@@ -124,7 +124,17 @@ namespace OrderingBooking.API
                 });
             });
 
+          /*  builder.Services.AddHttpClient();
+            // Configure GeocodingService
+            builder.Services.AddSingleton<AddressService>(sp =>
+            {
+                var httpClient = sp.GetRequiredService<HttpClient>();
+                var apiKey = "YOUR_API_KEY"; // Replace with your Google Maps Geocoding API key
+                //return new AddressService(httpClient, apiKey);
+            });*/
+
             builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
             var app = builder.Build();
 
             var versionDescriptionProvider =

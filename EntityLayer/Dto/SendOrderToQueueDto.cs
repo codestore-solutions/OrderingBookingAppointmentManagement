@@ -10,6 +10,7 @@ namespace Entitites.Dto
     {
         public long orderId { get; set; }
         public long customerId { get; set; }
-        public long storeId { get; set; }
+        public long vendorId { get; set; }
+        public long shippingAddressId { get; set; }
     }
 }

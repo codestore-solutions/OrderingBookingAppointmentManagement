@@ -25,9 +25,10 @@ namespace OrderingBooking.BL.Services
 
         public async Task<ResponseDto> CreateOrderAsync(CreateOrderDto createOrderDto)
         {
-            var connectionString = "Endpoint=sb://order-queue-service.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=eGzVejbuuKbdCiekSmrt6nzWxbTSwoeel+ASbMlTSt8=";
+            // Connection string setup for azure bus service (queue)
+            var connectionString = StringConstant.QueueConnectionString;
             var client = new ServiceBusClient(connectionString);
-            var sender = client.CreateSender("order-data");
+            var sender = client.CreateSender(StringConstant.QueueName);
 
             var response = new List<Object>();
 
@@ -43,8 +44,10 @@ namespace OrderingBooking.BL.Services
                 newOrder.PaymentId              = createOrderDto.PaymentId;
                 newOrder.VendorId               = ordersforVendors.VendorId;
                 newOrder.DeliveryCharges        = ordersforVendors.DeliveryCharges;
-                
-                
+                newOrder.DeliveryDate           = ordersforVendors.DeliveryDate;
+                TimeSpan deliveryTime           = TimeSpan.Parse(ordersforVendors.DeliveryTime);
+                newOrder.DeliveryTime           = deliveryTime;
+        
                 foreach (var orderItem in ordersforVendors.OrderItems)
                 {
                     var newOrderItem = new OrderItems();
@@ -54,7 +57,7 @@ namespace OrderingBooking.BL.Services
                     newOrderItem.Quantity        = orderItem.Quantity;
                     newOrderItem.Price           = orderItem.Price;
                     newOrderItem.Discount        = orderItem.Discount;
-                    newOrderItem.OrderId         = newOrder.OrderId;
+                    newOrderItem.OrderId         = newOrder.OrderId;                   
                     productCount++;
                     newOrder.OrderItems.Add(newOrderItem);     
                 }
@@ -66,22 +69,22 @@ namespace OrderingBooking.BL.Services
 
                 var queueObj = new SendOrderToQueueDto();
                 
-                queueObj.orderId    = newOrder.OrderId;
-                queueObj.customerId = createOrderDto.UserId;
-                queueObj.storeId    = ordersforVendors.VendorId;
+                queueObj.orderId             = newOrder.OrderId;
+                queueObj.customerId          = createOrderDto.UserId;
+                queueObj.vendorId            = ordersforVendors.VendorId;
+                queueObj.shippingAddressId   = newOrder.ShippingAddressId;
                 
                 var body = JsonSerializer.Serialize(queueObj);
                 var message = new ServiceBusMessage(body);
                 await sender.SendMessageAsync(message);
-
             }
 
             return new ResponseDto
             {
-                StatusCode = 200,
-                Success = true,
-                Data = response,
-                Message = StringConstant.SuccessMessage
+                StatusCode  = 200,
+                Success     = true,
+                Data        = response,
+                Message     = StringConstant.SuccessMessage
             };
         }
         public async Task<ResponseDto> GetAllOrdersAsync(long userId)
@@ -102,7 +105,7 @@ namespace OrderingBooking.BL.Services
 
             foreach (var orderId in orderIds)
             {
-                var order = await unitOfWork.OrderRepository.GetAll().Include(c=>c.OrderItems).FirstOrDefaultAsync(u => u.OrderId == orderId);
+                var order = await unitOfWork.OrderRepository.GetByIdAsync(orderId);                
                 if (order == null)
                 {
                     return new ResponseDto
@@ -113,6 +116,7 @@ namespace OrderingBooking.BL.Services
                         Message = StringConstant.ErrorMessage
                     };
                 }
+                var orderItems = order.OrderItems;
                 listOfOrders.Add(order);
             }
 

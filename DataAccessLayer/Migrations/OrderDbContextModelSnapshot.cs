@@ -17,7 +17,10 @@ namespace DataAccessLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.8")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -36,8 +39,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
@@ -46,6 +49,7 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     b.Property<long?>("VarientId")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<int>("orderStatus")
@@ -122,21 +126,26 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<int>("AddressType")
+                        .HasColumnType("int");
+
                     b.Property<string>("AlternateNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("CountryCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
@@ -152,22 +161,20 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("ShippingAddressId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("State")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.HasKey("Id");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
-                    b.HasIndex("ShippingAddressId");
+                    b.HasKey("Id");
 
                     b.ToTable("Addresses");
                 });
@@ -199,7 +206,7 @@ namespace DataAccessLayer.Migrations
                     b.Property<long>("CartId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("ProductId")
+                    b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("Quantity")
@@ -229,6 +236,12 @@ namespace DataAccessLayer.Migrations
                     b.Property<double>("DeliveryCharges")
                         .HasColumnType("float");
 
+                    b.Property<DateTime>("DeliveryDate")
+                        .HasColumnType("date");
+
+                    b.Property<TimeSpan?>("DeliveryTime")
+                        .HasColumnType("time");
+
                     b.Property<long>("PaymentId")
                         .HasColumnType("bigint");
 
@@ -237,6 +250,9 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<long>("ShippingAddressId")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -253,22 +269,6 @@ namespace DataAccessLayer.Migrations
                     b.HasKey("OrderId");
 
                     b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("EntityLayer.Models.ShippingAddress", b =>
-                {
-                    b.Property<long>("ShippingAddressId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ShippingAddressId"));
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("ShippingAddressId");
-
-                    b.ToTable("ShippngAddress");
                 });
 
             modelBuilder.Entity("Entitites.Models.OrderItems", b =>
@@ -291,17 +291,6 @@ namespace DataAccessLayer.Migrations
                         .IsRequired();
 
                     b.Navigation("WishlistCollection");
-                });
-
-            modelBuilder.Entity("EntityLayer.Models.Address", b =>
-                {
-                    b.HasOne("EntityLayer.Models.ShippingAddress", "ShippingAddress")
-                        .WithMany("Addresss")
-                        .HasForeignKey("ShippingAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ShippingAddress");
                 });
 
             modelBuilder.Entity("EntityLayer.Models.CartItems", b =>
@@ -328,11 +317,6 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("EntityLayer.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("EntityLayer.Models.ShippingAddress", b =>
-                {
-                    b.Navigation("Addresss");
                 });
 #pragma warning restore 612, 618
         }

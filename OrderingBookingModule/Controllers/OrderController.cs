@@ -20,6 +20,11 @@ namespace OrderingBooking.API.Controllers
             this.orderService = orderService;
         }
 
+        /// <summary>
+        /// Create a new order 
+        /// </summary>
+        /// <param name="createOrderDto"></param>
+        /// <returns></returns>
         [HttpPost("create-order")]
         [MapToApiVersion("1.0")]
         [ValidateModel]
@@ -28,6 +33,12 @@ namespace OrderingBooking.API.Controllers
             return Ok(await orderService.CreateOrderAsync(createOrderDto));
         }
 
+
+        /// <summary>
+        /// Get all order details by userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllOrdersAsync([FromQuery][Required] long userId)
@@ -35,6 +46,12 @@ namespace OrderingBooking.API.Controllers
             return Ok(await orderService.GetAllOrdersAsync(userId));
         }
 
+
+        /// <summary>
+        /// Get orders list for multiple orderIds
+        /// </summary>
+        /// <param name="orderIds"></param>
+        /// <returns></returns>
         [HttpGet("listOfOrders")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetOrdersList([FromQuery]List<long> orderIds)

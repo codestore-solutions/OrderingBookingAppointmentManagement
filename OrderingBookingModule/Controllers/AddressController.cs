@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderingBooking.API.CustomActionFilter;
 using OrderingBooking.BL.IServices;
+using System.ComponentModel.DataAnnotations;
 
 namespace OrderingBooking.API.Controllers
 {
@@ -60,7 +61,7 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpPost("add-address")]
         [ValidateModel]
-        public async Task<IActionResult> AddNewAddress([FromQuery] long userId, [FromBody] AddNewAddressDto addressDto)
+        public async Task<IActionResult> AddNewAddress([FromQuery][Required] long userId, [FromBody][Required] AddNewAddressDto addressDto)
         {
             return Ok(await addressService.AddNewAddressAsync(userId, addressDto));    
         }
@@ -77,6 +78,12 @@ namespace OrderingBooking.API.Controllers
             return Ok(await addressService.DeleteAddressAsync(shippingAddressId));
         }
 
+        /// <summary>
+        /// Update shipping address
+        /// </summary>
+        /// <param name="shippingAddressId"></param>
+        /// <param name="addressDto"></param>
+        /// <returns></returns>
         [HttpPut]
         [ValidateModel]
         public async Task<IActionResult> UpdateAddressAsync(long shippingAddressId, UpdateAddressDto addressDto)
@@ -84,5 +91,20 @@ namespace OrderingBooking.API.Controllers
             return Ok(await addressService.UpdateAddressAsync(shippingAddressId, addressDto));
         }
 
+
+     /*   [HttpGet("nearby")]
+        public async Task<IActionResult> GetNearbyAddresses(double latitude, double longitude)
+        {
+            try
+            {
+                var nearbyAddresses = await addressService.GetNearbyAddresses(latitude, longitude);
+                return Ok(nearbyAddresses);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                return StatusCode(500, ex.Message);
+            }
+        }*/
     }
 }

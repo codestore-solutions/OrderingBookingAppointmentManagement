@@ -6,10 +6,16 @@ namespace Entitites.Dto
     public class OrdersForVendorsDto
     {
         [Required]
+        [Range(0, long.MaxValue)]
         public long VendorId { get; set; }
 
         [Required]
+        [Range(0, double.MaxValue)]
         public double DeliveryCharges { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime DeliveryDate { get; set; }
+        public string? DeliveryTime { get; set; }
 
         [Required]
         public List<OrderItemsDto> OrderItems { get; set; } = new List<OrderItemsDto>();
@@ -17,6 +23,7 @@ namespace Entitites.Dto
     public class OrderItemsDto
     {
         [Required]
+        [Range(1, long.MaxValue)]
         [DataType("long")]
         public long ProductId { get; set; }
 
@@ -24,12 +31,15 @@ namespace Entitites.Dto
         public long? VarientId { get; set; }
 
         [Required]
+        [Range(0, long.MaxValue)]
         public long Price { get; set; }
 
         [Required]
+        [Range(0, double.MaxValue)]   
         public double Discount { get; set; }
 
         [Required]
+        [Range(1, int.MaxValue)]    
         public int Quantity { get; set; }
         public enum OrderStatus
         {
@@ -48,6 +58,7 @@ namespace Entitites.Dto
     {
 
         [Required]
+        [Range(1, long.MaxValue)]
         public long UserId { get; set; }
 
         [Required]
@@ -57,9 +68,11 @@ namespace Entitites.Dto
         public List<OrdersForVendorsDto> OrdersForVendors { get; set; } = new List<OrdersForVendorsDto>();
 
         [Required]
+        [Range(1, long.MaxValue)]
         public long PaymentId { get; set; }
 
         [Required]
+        [Range(1, long.MaxValue)]
         public long ShipingAddressId { get; set; }
 
         public enum PaymentStatus
