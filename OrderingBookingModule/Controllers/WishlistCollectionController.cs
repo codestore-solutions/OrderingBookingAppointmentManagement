@@ -45,7 +45,11 @@ namespace OrderingBooking.API.Controllers
             return Ok(await wishlistCollectionService.AddNewWishlistCollection(collectionDto));
         }
 
-
+        /// <summary>
+        /// Get list of all collections for a specific user.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("get-all-collections")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllCollectionsName([FromQuery][Required] long userId)
@@ -65,7 +69,12 @@ namespace OrderingBooking.API.Controllers
             return Ok(await wishlistCollectionService.DeleteCollectionAsync(wishlistCollectionId));
         }
 
-  
+        /// <summary>
+        /// Update wishlist collection name.
+        /// </summary>
+        /// <param name="wishlistCollectionId"></param>
+        /// <param name="nameDto"></param>
+        /// <returns></returns>
         [HttpPut("update-collection-name")]
         [ValidateModel]
         public async Task<IActionResult> UpdateCollectionNameAsync([FromQuery] long wishlistCollectionId, [FromBody] UpdateCollectionNameDto nameDto)

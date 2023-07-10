@@ -11,6 +11,6 @@ namespace Entitites.Models
         public long WishlistCollectionId { get; set; }
         public long UserId { get; set; }
         public string CollectionName { get; set; } = null!;
-        public List<WishlistItems> WishlistItems { get; set; } = new List<WishlistItems>();
+        public virtual ICollection<WishlistItems> WishlistItems { get; set; } = new List<WishlistItems>();
     }
 }

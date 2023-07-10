@@ -13,7 +13,7 @@ namespace EntityLayer.Models
         public long UserId { get; set; }
 
         [Required]
-        public ICollection<CartItems> CartItems { get; set; } = new List<CartItems>();     // Collection navigation property
+        public virtual ICollection<CartItems> CartItems { get; set; } = new List<CartItems>();     // Collection navigation property
     }
 }
 

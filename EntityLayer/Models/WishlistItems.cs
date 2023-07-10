@@ -19,7 +19,7 @@ namespace Entitites.Models
         public int Quantity { get; set; }
         public DateTime CreatedOn { get; set; }
         public long WishListCollectionId { get; set; }
-        public WishlistCollection WishlistCollection { get; set; } = null!;
+        public virtual WishlistCollection WishlistCollection { get; set; } = null!;
 
     }
 }

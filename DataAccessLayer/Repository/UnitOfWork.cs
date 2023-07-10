@@ -21,7 +21,6 @@ namespace DataAccessLayer.Repository
             CartRepository = new CartRepository(dbContext);
             WishListRepository =new WishListRepository(dbContext);
             CartItemsRepository = new CartItemsRepository(dbContext);
-            ShippingAddressRepository = new ShippingAddressRepository(dbContext);
             AddressRepository = new AddressRepository(dbContext);
             this.dbContext = dbContext;
         }
@@ -37,12 +36,6 @@ namespace DataAccessLayer.Repository
         }
 
         public ICartItemsRepository CartItemsRepository
-        {
-            get;
-            private set;
-        }
-
-        public IShippingAddressRepository ShippingAddressRepository
         {
             get;
             private set;

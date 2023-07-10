@@ -9,21 +9,31 @@ namespace EntityLayer.Models
 {
     public class Address
     {
-        [Required]
+        [Key]
         public long Id { get; set; }
+
+        [Required]
+        [Range(1, long.MaxValue)]
+        public long UserId { get; set; }
 
         [Required]
         [StringLength(200)]
         public string Street { get; set; } = null!;
 
-        [StringLength(20)]
+        [Required]
+        [StringLength(50)]
         public string City { get; set; } = null!;
 
-        [StringLength(20)]
+        [Required]
+        [StringLength(50)]
         public string State { get; set; } = null!;
+
+        [Required]
+        [StringLength(50)]
         public string Country { get; set; } = null !;
 
         [Required]
+        [StringLength (20)]
         public string CountryCode { get; set; } = null!;
 
         [Required]
@@ -32,9 +42,15 @@ namespace EntityLayer.Models
         [Required]
         public string PhoneNumber { get; set; } = null!;
         public string? AlternateNumber { get; set; }
+
+        public enum AddressesType
+        {
+            ShippingAddress = 1,
+            BillingAddress = 2
+        }
+        
+        public AddressesType AddressType { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public long ShippingAddressId { get; set; } 
-        public ShippingAddress ShippingAddress { get; set; } = null!;
     }
 }

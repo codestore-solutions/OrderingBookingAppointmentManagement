@@ -8,7 +8,6 @@ namespace DataAccessLayer.IRepository
         public IOrderRepository OrderRepository { get; }
         public IWishlistCollectionRepository WishlistCollectionRepository { get; }
         public IAddressRepository AddressRepository { get; }
-        public IShippingAddressRepository ShippingAddressRepository { get; }
         public ICartItemsRepository CartItemsRepository { get; }
         public IWishListRepository WishListRepository { get; }
         public ICartRepository CartRepository { get; }

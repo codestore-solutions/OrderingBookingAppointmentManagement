@@ -11,34 +11,45 @@ namespace Entitites.Dto
     public class AddNewAddressDto
     {
         [Required]
-        [StringLength(100, MinimumLength = 1, ErrorMessage = StringConstant.StringMessage)]
+        [StringLength(200)]
         public string Street { get; set; } = null!;
 
         [Required]
-        [StringLength(25, MinimumLength = 1, ErrorMessage = StringConstant.StringMessage)]
+        [StringLength(50)]
         public string City { get; set; } = null!;
 
         [Required]
-        [StringLength(25, MinimumLength = 1, ErrorMessage = StringConstant.StringMessage)]
+        [StringLength(50)]
         public string State { get; set; } = null!;
 
         [Required]
-        [StringLength(25, MinimumLength = 1, ErrorMessage = StringConstant.StringMessage)]
+        [StringLength(50)]
         public string Country { get; set; } = null!;
 
         [Required]
+        [RegularExpression(@"^\+91$")]
         public string CountryCode { get; set; } = null!;
 
         [Required]
-        [StringLength(25, MinimumLength = 1, ErrorMessage = StringConstant.StringMessage)]
+        [StringLength(25)]
+        [RegularExpression(@"^\d{6}$")]
         public string PostalCode { get; set; } = null!;
 
         [Required]
-        [StringLength(10, MinimumLength = 1, ErrorMessage = StringConstant.StringMessage)]
+        [StringLength(11)]
+        [RegularExpression(@"^[0-9]+$", ErrorMessage = StringConstant.PositiveAllowed)]
         public string PhoneNumber { get; set; } = null!;
 
-        [StringLength(10, MinimumLength = 1, ErrorMessage = StringConstant.StringMessage)]
+        [StringLength(25)]
         public string? AlternateNumber { get; set; }
+
+        public enum AddressesType
+        {
+            ShippingAddress = 1,
+            BillingAddress = 2
+        }
+
+        public AddressesType AddressType { get; set; }
 
         [Range(0.0, 100.0)]
         public double Latitude { get; set; }
