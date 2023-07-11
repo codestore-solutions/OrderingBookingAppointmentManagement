@@ -20,7 +20,6 @@ namespace EntityLayer.Common
         public const string QueueName = "order-data";
         public const string QueueConnectionString = "Endpoint=sb://order-queue-service.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=eGzVejbuuKbdCiekSmrt6nzWxbTSwoeel+ASbMlTSt8=";
         public const string PositiveAllowed = "Only positive numbers from 0 to 9 are allowed.";
-        public const string DatabaseError = "Error saving data to the database";
-
+        public const string DatabaseMessage = "Nothing is saved to the database";
     }
 }
