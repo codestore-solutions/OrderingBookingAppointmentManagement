@@ -6,7 +6,7 @@ namespace Entitites.Dto
     public class OrdersForVendorsDto
     {
         [Required]
-        [Range(0, long.MaxValue)]
+        [Range(1, long.MaxValue)]
         public long VendorId { get; set; }
 
         [Required]
@@ -14,8 +14,8 @@ namespace Entitites.Dto
         public double DeliveryCharges { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime DeliveryDate { get; set; }
-        public string? DeliveryTime { get; set; }
+        public DateTime? DeliveryDate { get; set; }
+        public string? DeliverySlotTime { get; set; } = string.Empty;
 
         [Required]
         public List<OrderItemsDto> OrderItems { get; set; } = new List<OrderItemsDto>();
@@ -63,6 +63,9 @@ namespace Entitites.Dto
 
         [Required]
         public DateTime CreatedDate { get; set;}
+
+        [Required]
+        public DateTime UpdatedOn { get; set; }
 
         [Required]
         public List<OrdersForVendorsDto> OrdersForVendors { get; set; } = new List<OrdersForVendorsDto>();

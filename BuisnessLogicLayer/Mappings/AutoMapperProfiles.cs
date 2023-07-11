@@ -19,7 +19,7 @@ namespace BuisnessLogicLayer.Mappings
             CreateMap<AddNewAddressDto, Address>().ReverseMap();
             CreateMap<UpdateAddressDto, Address>().ReverseMap();    
             CreateMap<CreateOrderDto, Order>().ReverseMap();
-            CreateMap<CreateOrderDto, OrderItems>().ReverseMap();
+            CreateMap<OrderItemsDto, OrderItems>().ReverseMap();
         }
     }
 }

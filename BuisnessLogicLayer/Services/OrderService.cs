@@ -7,6 +7,7 @@ using EntityLayer.Common;
 using EntityLayer.Dto;
 using EntityLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OrderingBooking.BL.IServices;
 using System.Text.Json;
 
@@ -36,27 +37,31 @@ namespace OrderingBooking.BL.Services
             {
                 long productCount = 0;
                 var newOrder = new Order();
-                newOrder.UserId                 = createOrderDto.UserId;
-                newOrder.ShippingAddressId      = createOrderDto.ShipingAddressId;
-                newOrder.CreatedDate            = createOrderDto.CreatedDate;
-                newOrder.paymentStatus          = (Order.PaymentStatus)createOrderDto.paymentStatus;
-                newOrder.paymentMode            = (Order.PaymentMode)createOrderDto.paymentMode;
-                newOrder.PaymentId              = createOrderDto.PaymentId;
+                mapper.Map(createOrderDto, newOrder);
+                DateTime tomorrowDate = DateTime.Now.AddDays(1);
+                DateTime tomorrow10AM = tomorrowDate.Date.AddHours(10);
+                TimeSpan tommorrowDeliveryTime = tomorrow10AM.TimeOfDay;
+
                 newOrder.VendorId               = ordersforVendors.VendorId;
                 newOrder.DeliveryCharges        = ordersforVendors.DeliveryCharges;
-                newOrder.DeliveryDate           = ordersforVendors.DeliveryDate;
-                TimeSpan deliveryTime           = TimeSpan.Parse(ordersforVendors.DeliveryTime);
-                newOrder.DeliveryTime           = deliveryTime;
-        
+
+                if (ordersforVendors.DeliverySlotTime.IsNullOrEmpty() || ordersforVendors.DeliveryDate == null)            
+                {
+                    newOrder.DeliveryTime = tommorrowDeliveryTime;
+                    newOrder.DeliveryDate = tomorrowDate;
+                }
+                else
+                {
+                    TimeSpan deliveryTime = TimeSpan.Parse(ordersforVendors.DeliverySlotTime);
+                    newOrder.DeliveryTime = deliveryTime;
+                    newOrder.DeliveryDate = (DateTime)ordersforVendors.DeliveryDate;
+                }
+               
                 foreach (var orderItem in ordersforVendors.OrderItems)
                 {
                     var newOrderItem = new OrderItems();
-                    newOrderItem.ProductId       = orderItem.ProductId;
-                    newOrderItem.VarientId       = orderItem.VarientId;
-                    newOrderItem.orderStatus     = (OrderItems.OrderStatus)orderItem.orderStatus;
-                    newOrderItem.Quantity        = orderItem.Quantity;
-                    newOrderItem.Price           = orderItem.Price;
-                    newOrderItem.Discount        = orderItem.Discount;
+                   
+                    mapper.Map(orderItem, newOrderItem);
                     newOrderItem.OrderId         = newOrder.OrderId;                   
                     productCount++;
                     newOrder.OrderItems.Add(newOrderItem);     
@@ -67,13 +72,14 @@ namespace OrderingBooking.BL.Services
                 await unitOfWork.OrderRepository.AddAsync(newOrder);
                 await unitOfWork.SaveAsync();
 
+                // Creating order and then pushing it into the queue
                 var queueObj = new SendOrderToQueueDto();
-                
-                queueObj.orderId             = newOrder.OrderId;
-                queueObj.customerId          = createOrderDto.UserId;
-                queueObj.vendorId            = ordersforVendors.VendorId;
-                queueObj.shippingAddressId   = newOrder.ShippingAddressId;
-                
+
+                queueObj.orderId = newOrder.OrderId;
+                queueObj.customerId = createOrderDto.UserId;
+                queueObj.vendorId = ordersforVendors.VendorId;
+                queueObj.shippingAddressId = newOrder.ShippingAddressId;
+
                 var body = JsonSerializer.Serialize(queueObj);
                 var message = new ServiceBusMessage(body);
                 await sender.SendMessageAsync(message);

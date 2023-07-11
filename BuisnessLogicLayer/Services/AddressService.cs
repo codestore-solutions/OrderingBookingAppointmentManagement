@@ -34,7 +34,7 @@ namespace OrderingBooking.BL.Services
             {
                 Success         = saveResult,
                 StatusCode      = saveResult? 200 : 500,
-                Data            = saveResult ? addNewAddress : StringConstant.DatabaseError,
+                Data            = saveResult ? addNewAddress : StringConstant.DatabaseMessage,
                 Message         = saveResult? StringConstant.SuccessMessage: StringConstant.ErrorMessage
             };
         }
