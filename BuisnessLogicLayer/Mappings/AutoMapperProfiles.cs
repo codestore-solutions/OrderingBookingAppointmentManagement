@@ -20,6 +20,7 @@ namespace BuisnessLogicLayer.Mappings
             CreateMap<UpdateAddressDto, Address>().ReverseMap();    
             CreateMap<CreateOrderDto, Order>().ReverseMap();
             CreateMap<OrderItemsDto, OrderItems>().ReverseMap();
+            CreateMap<AddProductsToCollectionDto, WishlistItems>().ReverseMap();
         }
     }
 }

@@ -42,6 +42,8 @@ namespace EntityLayer.Models
         [Required]
         public DateTime UpdatedOn { get; set; }
 
+        public double TipAmount { get; set; }
+
         [Column(TypeName = "date")]
         public DateTime DeliveryDate { get; set; }
         public TimeSpan? DeliveryTime { get; set; } 

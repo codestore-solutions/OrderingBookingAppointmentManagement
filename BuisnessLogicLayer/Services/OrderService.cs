@@ -38,9 +38,9 @@ namespace OrderingBooking.BL.Services
                 long productCount = 0;
                 var newOrder = new Order();
                 mapper.Map(createOrderDto, newOrder);
-                DateTime tomorrowDate = DateTime.Now.AddDays(1);
-                DateTime tomorrow10AM = tomorrowDate.Date.AddHours(10);
-                TimeSpan tommorrowDeliveryTime = tomorrow10AM.TimeOfDay;
+                DateTime tomorrowDate            = DateTime.Now.AddDays(1);
+                DateTime tomorrow10AM            = tomorrowDate.Date.AddHours(10);
+                TimeSpan tommorrowDeliveryTime   = tomorrow10AM.TimeOfDay;
 
                 newOrder.VendorId               = ordersforVendors.VendorId;
                 newOrder.DeliveryCharges        = ordersforVendors.DeliveryCharges;
