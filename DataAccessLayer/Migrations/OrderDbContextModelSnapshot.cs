@@ -251,6 +251,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<long>("ShippingAddressId")
                         .HasColumnType("bigint");
 
+                    b.Property<double>("TipAmount")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
 

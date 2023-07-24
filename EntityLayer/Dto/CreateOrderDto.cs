@@ -78,6 +78,8 @@ namespace Entitites.Dto
         [Range(1, long.MaxValue)]
         public long ShipingAddressId { get; set; }
 
+        [Range(0 , double.MaxValue)]     
+        public double TipAmount { get; set; }
         public enum PaymentStatus
         {
             Failed = 0,

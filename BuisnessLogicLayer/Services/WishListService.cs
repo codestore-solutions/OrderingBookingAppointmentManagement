@@ -33,7 +33,7 @@ namespace BuisnessLogicLayer.Services
                 StatusCode = saveResult ? 200 : 500,
                 Success = saveResult,
                 Data = addNewWishlistItem,
-                Message = saveResult ? StringConstant.SuccessMessage : StringConstant.ErrorMessage
+                Message = saveResult ? StringConstant.SuccessMessage : StringConstant.DatabaseMessage
             };
         }
         public async Task<ResponseDto> DeleteProductFromWishlistAsync(long wishlistCollectionId, long productId, long? varientId)
