@@ -76,7 +76,7 @@ namespace Entitites.Dto
 
         [Required]
         [Range(1, long.MaxValue)]
-        public long ShipingAddressId { get; set; }
+        public long ShippingAddressId { get; set; }
 
         [Range(0 , double.MaxValue)]     
         public double TipAmount { get; set; }
