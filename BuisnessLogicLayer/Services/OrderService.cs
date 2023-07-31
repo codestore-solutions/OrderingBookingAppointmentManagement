@@ -39,30 +39,16 @@ namespace OrderingBooking.BL.Services
                 var newOrder = new Order();
                 mapper.Map(createOrderDto, newOrder);
                 DateTime tomorrowDate            = DateTime.Now.AddDays(1);
-                DateTime tomorrow10AM            = tomorrowDate.Date.AddHours(10);
-                TimeSpan tommorrowDeliveryTime   = tomorrow10AM.TimeOfDay;
+                newOrder.VendorId                = ordersforVendors.VendorId;
+                newOrder.DeliveryCharges         = ordersforVendors.DeliveryCharges;
+                newOrder.DeliveryDate            = tomorrowDate;
 
-                newOrder.VendorId               = ordersforVendors.VendorId;
-                newOrder.DeliveryCharges        = ordersforVendors.DeliveryCharges;
-
-                if (ordersforVendors.DeliverySlotTime.IsNullOrEmpty() || ordersforVendors.DeliveryDate == null)            
-                {
-                    newOrder.DeliveryTime = tommorrowDeliveryTime;
-                    newOrder.DeliveryDate = tomorrowDate;
-                }
-                else
-                {
-                    TimeSpan deliveryTime = TimeSpan.Parse(ordersforVendors.DeliverySlotTime);
-                    newOrder.DeliveryTime = deliveryTime;
-                    newOrder.DeliveryDate = (DateTime)ordersforVendors.DeliveryDate;
-                }
-               
                 foreach (var orderItem in ordersforVendors.OrderItems)
                 {
                     var newOrderItem = new OrderItems();
                    
                     mapper.Map(orderItem, newOrderItem);
-                    newOrderItem.OrderId         = newOrder.OrderId;                   
+                    newOrderItem.OrderId   = newOrder.OrderId;                   
                     productCount++;
                     newOrder.OrderItems.Add(newOrderItem);     
                 }
