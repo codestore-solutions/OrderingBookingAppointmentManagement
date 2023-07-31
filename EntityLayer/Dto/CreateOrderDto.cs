@@ -13,10 +13,6 @@ namespace Entitites.Dto
         [Range(0, double.MaxValue)]
         public double DeliveryCharges { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime? DeliveryDate { get; set; }
-        public string? DeliverySlotTime { get; set; } = string.Empty;
-
         [Required]
         public List<OrderItemsDto> OrderItems { get; set; } = new List<OrderItemsDto>();
     }
@@ -80,6 +76,18 @@ namespace Entitites.Dto
 
         [Range(0 , double.MaxValue)]     
         public double TipAmount { get; set; }
+
+        /*[DataType(DataType.Date)]
+        public DateTime DeliveryDate { get; set; }*/
+        public enum DeliverySlots
+        {
+            None = 0,
+            E6AmTo10Am = 1,
+            E10AmTo2Pm = 2,
+            E2PmTo6Pm = 3,
+            E6PmTo10Pm = 4,
+        }
+        public DeliverySlots DeliverySlot { get; set; }
         public enum PaymentStatus
         {
             Failed = 0,

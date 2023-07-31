@@ -42,23 +42,33 @@ namespace EntityLayer.Models
         [Required]
         public DateTime UpdatedOn { get; set; }
 
+        [Required]
         public double TipAmount { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime DeliveryDate { get; set; }
-        public TimeSpan? DeliveryTime { get; set; } 
         public enum PaymentStatus
         {
-            Failed =0,
-            Pending=2,
-            Successful=1,    
+            Failed     = 0,
+            Successful = 1,
+            Pending    = 2          
         }   
 
         public enum PaymentMode
         {
-            Online =1,
-            COD =2
+            Online = 1,
+            COD    = 2
         }
+
+        public enum DeliverySlots
+        {
+            None        = 0,
+            E6AmTo10Am  = 1,
+            E10AmTo2Pm  = 2,
+            E2PmTo6Pm   = 3,
+            E6PmTo10Pm  = 4,
+        }
+        public DeliverySlots DeliverySlot { get; set; }
 
         [Required]
         public PaymentMode paymentMode { get; set; }
