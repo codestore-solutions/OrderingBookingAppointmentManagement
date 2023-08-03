@@ -81,7 +81,7 @@ namespace Entitites.Dto
         public DateTime DeliveryDate { get; set; }*/
         public enum DeliverySlots
         {
-            None = 0,
+            Default10Am = 0,
             E6AmTo10Am = 1,
             E10AmTo2Pm = 2,
             E2PmTo6Pm = 3,
