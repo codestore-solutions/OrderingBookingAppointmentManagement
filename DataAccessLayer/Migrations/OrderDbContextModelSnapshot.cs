@@ -39,6 +39,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
+
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
@@ -48,12 +51,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<long?>("VarientId")
-                        .IsRequired()
+                    b.Property<long>("VariantId")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("orderStatus")
-                        .HasColumnType("int");
 
                     b.HasKey("OrderItemsId");
 
@@ -179,45 +178,27 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("EntityLayer.Models.Cart", b =>
+            modelBuilder.Entity("EntityLayer.Models.CartItem", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cart");
-                });
-
-            modelBuilder.Entity("EntityLayer.Models.CartItems", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("CartId")
-                        .HasColumnType("bigint");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("Quantity")
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("VarientId")
+                    b.Property<long>("VariantId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CartId");
 
                     b.ToTable("CartItems");
                 });
@@ -239,8 +220,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("DeliverySlot")
-                        .HasColumnType("int");
+                    b.Property<long>("DeliverySlotId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("PaymentId")
                         .HasColumnType("bigint");
@@ -296,25 +277,9 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("WishlistCollection");
                 });
 
-            modelBuilder.Entity("EntityLayer.Models.CartItems", b =>
-                {
-                    b.HasOne("EntityLayer.Models.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-                });
-
             modelBuilder.Entity("Entitites.Models.WishlistCollection", b =>
                 {
                     b.Navigation("WishlistItems");
-                });
-
-            modelBuilder.Entity("EntityLayer.Models.Cart", b =>
-                {
-                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("EntityLayer.Models.Order", b =>

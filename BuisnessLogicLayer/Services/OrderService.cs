@@ -81,7 +81,12 @@ namespace OrderingBooking.BL.Services
         }
         public async Task<ResponseDto> GetAllOrdersAsync(long userId)
         {
-            var orders = await unitOfWork.OrderRepository.GetAll().Include(c => c.OrderItems).Where(u => u.UserId == userId).ToListAsync();
+            var orders = await unitOfWork.OrderRepository.GetAllAsQueryable().Where(u => u.UserId == userId).ToListAsync();
+
+            foreach(var order in orders)
+            {
+                var orderItems = order.OrderItems.ToList();
+            }
 
             return new ResponseDto
             {

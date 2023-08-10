@@ -6,10 +6,16 @@ namespace EntityLayer.Dto
     public class AddToCartRequestDto
     {
         [Required]
-        public long ProductId { get; set; }
-        public long VarientId { get; set; }
         public long UserId { get; set; }
-        public int ProductQuantity { get; set; }
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [Required]
+        public long VariantId { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
     }
 }
 

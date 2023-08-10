@@ -1,9 +1,11 @@
 ﻿using Entitites.Dto;
+using EntityLayer.Common;
 using EntityLayer.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderingBooking.API.CustomActionFilter;
 using OrderingBooking.BL.IServices;
+using OrderingBooking.BL.Services;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrderingBooking.API.Controllers
@@ -25,21 +27,30 @@ namespace OrderingBooking.API.Controllers
         /// <param name="userId" example="5"></param>
         /// <returns></returns>
         [HttpGet("get-all-addresses")]
-        public async Task<IActionResult> GetAllAddressesByUserId([FromQuery] long userId)
+        public async Task<IActionResult> GetAllAddressesByUserId([FromQuery][Required] long userId)
         {
-            return Ok(await addressService.GetAllAddressesByUserId(userId));
+            var result = await addressService.GetAllAddressesAsync(userId);
+            if(result.Any())
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.SuccessMessage});
+            }
+            return NotFound(new { message = StringConstant.NoSavedAddressMessage});
         }
 
         /// <summary>
-        /// Get shipping address by userId and shippingId in which product would be delivered.
+        /// Get Address by addressId.
         /// </summary>
-        /// <param name="userId" example="5"></param>
-        /// <param name="shippingAddressId" example="1"></param>
+        /// <param name="addressId"></param>
         /// <returns></returns>
         [HttpGet("get-address")]
-        public async Task<IActionResult> GetAddress([FromQuery] long shippingAddressId)
+        public async Task<IActionResult> GetAddress([FromQuery][Required] long addressId)
         {
-            return Ok(await addressService.GetAddressByShippingId(shippingAddressId));
+            var result = await addressService.GetAddressByIdAsync(addressId);
+            if(result!=null)
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.SuccessMessage });
+            }
+            return NotFound(new {message = StringConstant.ResourceNotFoundError});
         }
 
         /// <summary>
@@ -50,45 +61,64 @@ namespace OrderingBooking.API.Controllers
         [HttpGet("getMultipleAddress")]
         public async Task<IActionResult> GetAddressesInBulk([FromQuery] List<long> shippingAddressIds)
         {
-            return Ok(await addressService.GetAddressesInBulkAsync(shippingAddressIds));
+            var result = await addressService.GetMultipleAddressesAsync(shippingAddressIds);
+            if (result.Any())
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.SuccessMessage });
+            }
+            return NotFound(new { message = StringConstant.ResourceNotFoundError });
         }
 
         /// <summary>
-        /// Add new address for a user 
+        /// Add new address for a user / Add more multiple addresses for same user.
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="addressDto"></param>
         /// <returns></returns>
         [HttpPost("add-address")]
         [ValidateModel]
-        public async Task<IActionResult> AddNewAddress([FromQuery][Required] long userId, [FromBody][Required] AddNewAddressDto addressDto)
+        public async Task<ActionResult<ResponseDto>> AddAddressAsync([FromQuery][Required] long userId, [FromBody][Required] AddAddressDto addressDto)
         {
-            return Ok(await addressService.AddNewAddressAsync(userId, addressDto));    
+            var result = await addressService.AddAddressAsync(userId, addressDto);
+            if (result.Success)
+            {
+                return result;
+            }
+            return StatusCode(result.StatusCode , result);
         }
 
         /// <summary>
-        /// Delete a address by userId & shippingAddressId
+        /// Delete address by addressId.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="shippingAddressId"></param>
+        /// <param name="addressId"></param>
         /// <returns></returns>
         [HttpDelete("delete-address")]
-        public async Task<IActionResult> DeleteAddressAsync([FromQuery] long shippingAddressId)
+        public async Task<IActionResult> DeleteAddressAsync([FromQuery][Required] long addressId)
         {
-            return Ok(await addressService.DeleteAddressAsync(shippingAddressId));
+            var result = await addressService.DeleteAddressAsync(addressId);
+            if (result != null)
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.AddressDeletedMessage});
+            }
+            return NotFound(new { message = StringConstant.ResourceNotFoundError});
         }
 
         /// <summary>
-        /// Update shipping address
+        /// Update Address API.
         /// </summary>
-        /// <param name="shippingAddressId"></param>
+        /// <param name="addressId"></param>
         /// <param name="addressDto"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPut("update-address")]
         [ValidateModel]
-        public async Task<IActionResult> UpdateAddressAsync(long shippingAddressId, UpdateAddressDto addressDto)
+        public async Task<IActionResult> UpdateAddressAsync([FromQuery][Required] long addressId, UpdateAddressDto addressDto)
         {
-            return Ok(await addressService.UpdateAddressAsync(shippingAddressId, addressDto));
+            var result = await addressService.UpdateAddressAsync(addressId, addressDto);
+            if(result != null)
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.AddressUpdatedMessage });
+            }
+            return NotFound(new { message = StringConstant.ResourceNotFoundError });
         }
 
 

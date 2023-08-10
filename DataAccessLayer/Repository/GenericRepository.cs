@@ -19,7 +19,7 @@ namespace DataAccessLayer.Repository
             _dbSet = dbContext.Set<T>();
         }
 
-        public IQueryable<T> GetAll()
+        public IQueryable<T> GetAllAsQueryable()
         {
             return _dbSet.AsQueryable();
         } 
@@ -31,7 +31,7 @@ namespace DataAccessLayer.Repository
         {
             await _dbSet.AddAsync(entity);
         }  
-        public async Task<T> DeleteAsync(long id)
+        public async Task<T?> DeleteAsync(long id)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity == null)

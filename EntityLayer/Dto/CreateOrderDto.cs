@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using static Entitites.Common.EnumConstants;
 
 namespace Entitites.Dto
 {
@@ -77,17 +78,9 @@ namespace Entitites.Dto
         [Range(0 , double.MaxValue)]     
         public double TipAmount { get; set; }
 
-        /*[DataType(DataType.Date)]
-        public DateTime DeliveryDate { get; set; }*/
-        public enum DeliverySlots
-        {
-            Default10Am = 0,
-            E6AmTo10Am = 1,
-            E10AmTo2Pm = 2,
-            E2PmTo6Pm = 3,
-            E6PmTo10Pm = 4,
-        }
-        public DeliverySlots DeliverySlot { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DeliveryDate { get; set; }
+        public long DeliverySlotId { get; set; }
         public enum PaymentStatus
         {
             Failed = 0,

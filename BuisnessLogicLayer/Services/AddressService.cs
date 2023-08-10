@@ -8,8 +8,6 @@ using Microsoft.Azure.Amqp.Encoding;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OrderingBooking.BL.IServices;
-using System.Net.Http;
-
 namespace OrderingBooking.BL.Services
 {
     public class AddressService : IAddressService
@@ -23,10 +21,12 @@ namespace OrderingBooking.BL.Services
             this.mapper = mapper;
         }
 
-        public async Task<ResponseDto> AddNewAddressAsync(long userId, AddNewAddressDto addressDto)
+        public async Task<ResponseDto> AddAddressAsync(long userId, AddAddressDto addressDto)
         {      
             var addNewAddress = new Address();
             mapper.Map(addressDto, addNewAddress);
+            addNewAddress.UserId = userId;
+
             await unitOfWork.AddressRepository.AddAsync(addNewAddress);
             bool saveResult = await unitOfWork.SaveAsync();            
 
@@ -34,109 +34,56 @@ namespace OrderingBooking.BL.Services
             {
                 Success         = saveResult,
                 StatusCode      = saveResult? 200 : 500,
-                Data            = saveResult ? addNewAddress : StringConstant.DatabaseMessage,
-                Message         = saveResult? StringConstant.SuccessMessage: StringConstant.ErrorMessage
+                Data            = addNewAddress,
+                Message         = saveResult? StringConstant.AddressCreatedMessage : StringConstant.DatabaseMessage
             };
         }
 
-        public async Task<ResponseDto> GetAllAddressesByUserId(long userId)
-        {
-            var addresses = await unitOfWork.AddressRepository.GetAll().Where(u => u.UserId == userId).ToListAsync();
-
-            return new ResponseDto
-            {
-                Success    = true,
-                StatusCode = 200,
-                Data       = addresses,
-                Message    = StringConstant.SuccessMessage
-            };
+        public async Task<IEnumerable<Address>> GetAllAddressesAsync(long userId)
+        {   
+            return await unitOfWork.AddressRepository.GetAllAsQueryable().Where(u => u.UserId == userId).ToListAsync();
         }
 
-        public async Task<ResponseDto?> GetAddressByShippingId(long shippingAddressId)
+        public async Task<Address?> GetAddressByIdAsync(long shippingAddressId)
         {
-            var shippingAddress = await unitOfWork.AddressRepository.GetByIdAsync(shippingAddressId);
+            return await unitOfWork.AddressRepository.GetByIdAsync(shippingAddressId);
+        }
 
-            if(shippingAddress == null)
+        public async Task<Address?> DeleteAddressAsync(long addressId)
+        {
+            var address = await unitOfWork.AddressRepository.DeleteAsync(addressId);
+            if (address != null)
             {
-                return null;
+               await unitOfWork.SaveAsync();
             }
-
-            return new ResponseDto
-            {
-                Success     = true,
-                StatusCode  = 200,
-                Data        = shippingAddress,
-                Message     = StringConstant.SuccessMessage
-            };
+            return address;
         }
 
-        public async Task<ResponseDto> DeleteAddressAsync(long shippingAddressId)
+        // Required for Order Processing Module for data mapping.
+        public async Task<IEnumerable<Address>> GetMultipleAddressesAsync(List<long> addressIds)
         {
-            var address = await unitOfWork.AddressRepository.DeleteAsync(shippingAddressId);
-            bool saveResult = await unitOfWork.SaveAsync();
+            var addressesList = new List<Address>();
 
-            return new ResponseDto
+            foreach(var addressId in addressIds)
             {
-                Success     = saveResult,
-                StatusCode  = saveResult? 200: 500,
-                Data        = address,
-                Message     = saveResult? StringConstant.SuccessMessage : StringConstant.ErrorMessage
-            };
-        }
-
-        public async Task<ResponseDto> GetAddressesInBulkAsync(List<long> shippingAddressIds)
-        {
-            var shippingAddresses = new List<Object>();
-
-            foreach(var shippingAddressId in shippingAddressIds)
-            {
-                var shippingAddress = await unitOfWork.AddressRepository.GetByIdAsync(shippingAddressId);
-                if (shippingAddress == null)
+                var address = await unitOfWork.AddressRepository.GetByIdAsync(addressId);
+                if (address != null)
                 {
-                    return new ResponseDto
-                    {
-                        StatusCode = 400,
-                        Success = false,
-                        Data = StringConstant.InvalidInputError,
-                        Message = StringConstant.ErrorMessage
-                    };
+                    addressesList.Add(address);
                 }
-                shippingAddresses.Add(shippingAddress);
             }
-           
-            
-            return new ResponseDto
-            {
-                Success = true,
-                StatusCode = 200,
-                Data = shippingAddresses,
-                Message = StringConstant.SuccessMessage
-            };
-
+            return addressesList;
         }
 
-        public async Task<ResponseDto> UpdateAddressAsync(long shippingAddressId, UpdateAddressDto addressDto)
+        public async Task<Address?> UpdateAddressAsync(long addressId, UpdateAddressDto addressDto)
         {
-            var address = await unitOfWork.AddressRepository.GetByIdAsync(shippingAddressId);
-            if (address == null)
+            var address = await unitOfWork.AddressRepository.GetByIdAsync(addressId);
+            if(address != null) 
             {
-                return new ResponseDto
-                {
-                    StatusCode = 400,
-                    Success = false,
-                    Data = StringConstant.InvalidInputError,
-                    Message = StringConstant.ErrorMessage
-                };
+                mapper.Map(addressDto, address);
+                await unitOfWork.SaveAsync();
             }
-            mapper.Map(addressDto, address);
-            await unitOfWork.SaveAsync();
-            return new ResponseDto
-            {
-                Success = true,
-                StatusCode = 200,
-                Data = address,
-                Message = StringConstant.SuccessMessage
-            };
+            return address;
         }
 
 

@@ -4,10 +4,10 @@ namespace DataAccessLayer.IRepository
 {
     public interface IGenericRepository<T> where T : class
     {
-        public IQueryable<T> GetAll();
+        public IQueryable<T> GetAllAsQueryable();
         Task<T?> GetByIdAsync(long id);
         public Task AddAsync(T entity);
-        Task<T> DeleteAsync(long id);
+        Task<T?> DeleteAsync(long id);
         public void Delete(T entity);
     }
 }

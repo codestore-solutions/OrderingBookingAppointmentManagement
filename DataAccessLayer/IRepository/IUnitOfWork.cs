@@ -10,7 +10,6 @@ namespace DataAccessLayer.IRepository
         public IAddressRepository AddressRepository { get; }
         public ICartItemsRepository CartItemsRepository { get; }
         public IWishListRepository WishListRepository { get; }
-        public ICartRepository CartRepository { get; }
         public void Save();
         public Task<bool> SaveAsync();
     }

@@ -1,6 +1,7 @@
 ﻿using Entitites.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static Entitites.Common.EnumConstants;
 
 namespace EntityLayer.Models
 {
@@ -45,8 +46,6 @@ namespace EntityLayer.Models
         [Required]
         public double TipAmount { get; set; }
 
-        [Column(TypeName = "date")]
-        public DateTime DeliveryDate { get; set; }
         public enum PaymentStatus
         {
             Failed     = 0,
@@ -60,16 +59,10 @@ namespace EntityLayer.Models
             COD    = 2
         }
 
-        public enum DeliverySlots
-        {
-            Default10Am = 0,
-            E6AmTo10Am  = 1,
-            E10AmTo2Pm  = 2,
-            E2PmTo6Pm   = 3,
-            E6PmTo10Pm  = 4,
-        }
-        public DeliverySlots DeliverySlot { get; set; }
-
+        [Column(TypeName = "date")]
+        public DateTime DeliveryDate { get; set; }
+        public long DeliverySlotId { get; set; }
+       
         [Required]
         public PaymentMode paymentMode { get; set; }
 

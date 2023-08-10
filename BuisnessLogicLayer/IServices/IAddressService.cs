@@ -1,5 +1,6 @@
 ﻿using Entitites.Dto;
 using EntityLayer.Dto;
+using EntityLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,12 @@ namespace OrderingBooking.BL.IServices
 {
     public interface IAddressService
     {
-       public Task<ResponseDto> GetAllAddressesByUserId(long userId);
-       public Task<ResponseDto> GetAddressesInBulkAsync(List<long> shippingAddressIds);
-       public Task<ResponseDto> AddNewAddressAsync(long userId, AddNewAddressDto addressDto);
-       public Task<ResponseDto?> GetAddressByShippingId(long shippingAddressId);
-       public Task<ResponseDto> DeleteAddressAsync(long shippingAddressId);
-       public Task<ResponseDto> UpdateAddressAsync(long shippingAddressId, UpdateAddressDto addressDto);
+       public Task<IEnumerable<Address>> GetAllAddressesAsync(long userId);
+       public Task<IEnumerable<Address>> GetMultipleAddressesAsync(List<long> addressIds);
+       public Task<ResponseDto> AddAddressAsync(long userId, AddAddressDto addressDto);
+       public Task<Address?> GetAddressByIdAsync(long addressId);
+       public Task<Address?> DeleteAddressAsync(long addressId);
+       public Task<Address?> UpdateAddressAsync(long addressId, UpdateAddressDto addressDto);
 
    //    public Task<List<string>> GetNearbyAddresses(double latitude, double longitude, int radius = 30);
     }

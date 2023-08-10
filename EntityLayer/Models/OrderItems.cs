@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Entitites.Common.EnumConstants;
 
 namespace Entitites.Models
 {
@@ -19,7 +20,7 @@ namespace Entitites.Models
 
         [Required]
         [Range(1, long.MaxValue)]
-        public long? VarientId { get; set; }
+        public long VariantId { get; set; }
 
         [Required]
         [Range(0, double.MaxValue)]
@@ -28,18 +29,9 @@ namespace Entitites.Models
 
         [Required]
         public int Quantity { get; set; }
-        public enum OrderStatus
-        {
-            NewCreated,
-            Processing,
-            Delivered,
-            Returned,
-            Replaced,
-            Cancelled
-        }
-
+      
         [Required]
-        public OrderStatus orderStatus { get; set; }
+        public OrderStatus OrderStatus { get; set; }
 
         [Required]
         public long OrderId { get; set; }

@@ -3,6 +3,9 @@ using EntityLayer.Common;
 using EntityLayer.Dto;
 using Microsoft.AspNetCore.Mvc;
 using OrderingBooking.API.CustomActionFilter;
+using OrderingBooking.BL.Services;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace OrderingBooking.API.Controllers
 {
@@ -18,84 +21,84 @@ namespace OrderingBooking.API.Controllers
             this.cartService = cartService;
         }
 
-        // GET: /api/cart
         /// <summary>
-        /// Get cart by userId
+        /// Get all cart items by user id.
         /// </summary>
         /// <param name="userId" example="1001"> UserId</param>
         /// <returns></returns>
         [HttpGet]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> GetCartAsync([FromQuery] long userId)
+        public async Task<ActionResult<ResponseDto>> GetCartAsync([FromQuery][Required] long userId)
         {
-            var cart = await cartService.GetCartAsync(userId);
-            if (cart == null)
+            var result = await cartService.GetAllCartItemsAsync(userId);
+            if (result.Any())
             {
-                return NotFound(StringConstant.EmptyMessage);
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result , Message = StringConstant.SuccessMessage});
             }
-            return Ok(cart);
+            return NotFound(new { message = StringConstant.ResourceNotFoundError});
         }
 
-        // POST: /api/cart/add
         /// <summary>
-        /// Add product to cart
+        /// Add items to cart.
         /// </summary>
-        /// <param name="addToCartRequest"></param>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST /api/cart/add
-        ///     {
-        ///        "productId"       : long,
-        ///        "varientId"       : long,
-        ///        "userId"          : long,
-        ///        "productQuantity" : int
-        ///     }
-        /// </remarks>
+        /// <param name="addToCartRequestDto"></param>
         /// <returns></returns>
         [HttpPost("add")]
         [ValidateModel]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> AddToCartAsync(AddToCartRequestDto addToCartRequest)
+        public async Task<ActionResult<ResponseDto>> AddToCartAsync(AddToCartRequestDto addToCartRequestDto)
         {
-            return Ok(await cartService.AddToCartAsync(addToCartRequest));
+            var result = await cartService.AddToCartAsync(addToCartRequestDto);
+            if (result != null)
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.AddedToCartMessage});
+            }
+            return BadRequest(new {message = StringConstant.AlreadyExistMessage});
         }
 
-        // PUT: /api/cart/updateQty
         /// <summary>
-        /// Update product quantity inside cart
+        /// Update item quantity .
         /// </summary>
-        /// <param name="productId" example="2">ProductId</param>
-        /// <param name="updateProduct"></param>
+        /// <param name="updateProductDto"></param>
         /// <returns></returns>
         [HttpPut("updateQty")]
         [ValidateModel]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> UpdateOrderLine(UpdateProductQtyRequestDto updateProduct)
+        public async Task<IActionResult> UpdateQuantityAsync(UpdateProductQtyRequestDto updateProductDto)
         {
-            var updatedOrderLine = await cartService.UpdateProductQuantityAsync(updateProduct);
-            if (updatedOrderLine == null)
+            var result = await cartService.UpdateProductQuantityAsync(updateProductDto);
+            if (result != null)
             {
-                return NotFound(StringConstant.InvalidInputError);
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.QuanitityUpdatedMessage});
             }
-            return Ok(updatedOrderLine);
+            return NotFound(new {message = StringConstant.ResourceNotFoundError});
         }
 
-        // DELETE: /api/cart/delete
         /// <summary>
-        /// Remove product from cart
+        /// Remove item from cart.
         /// </summary>
-        /// <param name="productId"></param>
-        /// <param name="userId"></param>
+        /// <param name="cartItemId"></param>
         /// <returns></returns>
         [HttpDelete("delete")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> DeleteProductFromOrderLine([FromQuery] long productId, [FromQuery] long userId)
+        public async Task<IActionResult> DeleteProductFromOrderLine([FromQuery][Required] long cartItemId)
         {
-            await cartService.DeleteItemFromCartAsync(productId, userId);
-            return Ok(StringConstant.SuccessMessage);
+            var result = await cartService.DeleteItemFromCartAsync(cartItemId);
+            if(result != null)
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.ItemRemovedMessage });
+            }
+            return NotFound(new { message = StringConstant.ResourceNotFoundError });
         }
 
+        /*[HttpDelete("deleteItems/{userId}")]
+        public async IActionResult DeleteCartItems(long userId)
+        {
+            // Delete cart items for the specified user
+           var result =  await cartService.DeleteCartItems(userId);
+
+            return Ok(new { message = "Cart items deleted successfully." });
+        }*/
 
 
     }

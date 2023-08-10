@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.IRepository
 {
-    public interface ICartItemsRepository : IGenericRepository<CartItems>
+    public interface ICartItemsRepository : IGenericRepository<CartItem>
     {
     }
 }
