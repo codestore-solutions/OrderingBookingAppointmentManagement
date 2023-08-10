@@ -23,6 +23,7 @@ namespace BuisnessLogicLayer.Services
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
+
         public async Task<IEnumerable<CartItem>> GetAllCartItemsAsync(long userId)
         {
             var cartItems = await unitOfWork.CartItemsRepository.GetAllAsQueryable().Where(c => c.UserId == userId).ToListAsync();

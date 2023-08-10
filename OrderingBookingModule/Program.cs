@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using OrderingBooking.BL.IServices;
 using OrderingBooking.BL.Services;
 using OrderingBooking.API.MiddleWares;
+using EntityLayer.Common;
 
 namespace OrderingBooking.API
 {
@@ -27,7 +28,7 @@ namespace OrderingBooking.API
             // Add services to the container.
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()
-                .WriteTo.File("Logs/OrderLineGet_Logs.txt", rollingInterval: RollingInterval.Minute)
+                .WriteTo.File(StringConstant.LogPath, rollingInterval: RollingInterval.Minute)  
                 .MinimumLevel.Warning()
                 .CreateLogger();
 
@@ -92,7 +93,7 @@ namespace OrderingBooking.API
             });
 
             builder.Services.AddDbContext<OrderDbContext>(options =>
-            options.UseSqlServer("name=ConnectionStrings:OrderingBookingConnectionString"));
+            options.UseSqlServer(builder.Configuration.GetConnectionString(StringConstant.ConnectionStringPath)));
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
                options.TokenValidationParameters = new TokenValidationParameters

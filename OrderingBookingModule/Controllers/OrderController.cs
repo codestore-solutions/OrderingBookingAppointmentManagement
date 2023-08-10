@@ -1,4 +1,5 @@
 ﻿using Entitites.Dto;
+using EntityLayer.Common;
 using EntityLayer.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,6 @@ namespace OrderingBooking.API.Controllers
             return Ok(await orderService.CreateOrderAsync(createOrderDto));
         }
 
-
         /// <summary>
         /// Get all order details by userId
         /// </summary>
@@ -43,9 +43,15 @@ namespace OrderingBooking.API.Controllers
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllOrdersAsync([FromQuery][Required] long userId)
         {
-            return Ok(await orderService.GetAllOrdersAsync(userId));
+            // logger
+            var result = await orderService.GetAllOrdersAsync(userId);
+            if (result.Any())
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.SuccessMessage });
+            }
+            return NotFound(new { message = StringConstant.ResourceNotFoundError });
+            // logger
         }
-
 
         /// <summary>
         /// Get orders list for multiple orderIds

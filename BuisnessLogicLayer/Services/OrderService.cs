@@ -79,7 +79,7 @@ namespace OrderingBooking.BL.Services
                 Message     = StringConstant.SuccessMessage
             };
         }
-        public async Task<ResponseDto> GetAllOrdersAsync(long userId)
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync(long userId)
         {
             var orders = await unitOfWork.OrderRepository.GetAllAsQueryable().Where(u => u.UserId == userId).ToListAsync();
 
@@ -87,14 +87,7 @@ namespace OrderingBooking.BL.Services
             {
                 var orderItems = order.OrderItems.ToList();
             }
-
-            return new ResponseDto
-            {
-                StatusCode  = 200,
-                Success     = true,
-                Data        = orders,
-                Message     = StringConstant.SuccessMessage
-            };
+            return orders;
         }
         public async Task<ResponseDto> GetOrdersList(List<long> orderIds)
         {

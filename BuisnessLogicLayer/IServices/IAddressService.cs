@@ -13,7 +13,7 @@ namespace OrderingBooking.BL.IServices
     {
        public Task<IEnumerable<Address>> GetAllAddressesAsync(long userId);
        public Task<IEnumerable<Address>> GetMultipleAddressesAsync(List<long> addressIds);
-       public Task<ResponseDto> AddAddressAsync(long userId, AddAddressDto addressDto);
+       public Task<Address> AddAddressAsync(long userId, AddAddressDto addressDto);
        public Task<Address?> GetAddressByIdAsync(long addressId);
        public Task<Address?> DeleteAddressAsync(long addressId);
        public Task<Address?> UpdateAddressAsync(long addressId, UpdateAddressDto addressDto);

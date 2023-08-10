@@ -29,5 +29,8 @@ namespace EntityLayer.Common
         public const string MaxQuantityMessage                  = "We are Sorry! Only 10 Units allowed in each Order";
         public const string ItemRemovedMessage                  = "Item removed from cart.";
         public const string QuanitityUpdatedMessage             = "Quantity Updated Succesfully.";
+        public const string LogPath                             = "Logs/All_Logs-.txt";
+        public const string ConnectionStringPath                = "OrderingBookingConnectionString";
+        public const string GlobalExceptionMessage              = "Something Went Wrong, Please Contact to the administrator.";
     }
 }

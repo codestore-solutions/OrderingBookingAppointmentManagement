@@ -80,11 +80,11 @@ namespace OrderingBooking.API.Controllers
         public async Task<ActionResult<ResponseDto>> AddAddressAsync([FromQuery][Required] long userId, [FromBody][Required] AddAddressDto addressDto)
         {
             var result = await addressService.AddAddressAsync(userId, addressDto);
-            if (result.Success)
+            if (result != null)
             {
-                return result;
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.AddressCreatedMessage });
             }
-            return StatusCode(result.StatusCode , result);
+            return BadRequest(new { message = StringConstant.InvalidInputError});
         }
 
         /// <summary>

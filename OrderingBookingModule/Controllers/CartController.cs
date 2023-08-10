@@ -30,6 +30,7 @@ namespace OrderingBooking.API.Controllers
         [MapToApiVersion("1.0")]
         public async Task<ActionResult<ResponseDto>> GetCartAsync([FromQuery][Required] long userId)
         {
+
             var result = await cartService.GetAllCartItemsAsync(userId);
             if (result.Any())
             {
