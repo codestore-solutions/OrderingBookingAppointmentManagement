@@ -11,8 +11,7 @@ namespace DataAccessLayer.Data
             
         }
 
-        public DbSet<Cart> Cart { get; set; }
-        public DbSet<CartItems> CartItems { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<WishlistCollection> WishlistCollections { get; set; }
         public DbSet<WishlistItems> WishlistItems { get; set; }
@@ -21,11 +20,6 @@ namespace DataAccessLayer.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<CartItems>()
-                .HasOne(ci => ci.Cart)
-                .WithMany(c => c.CartItems)
-                .HasForeignKey(ci => ci.CartId);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

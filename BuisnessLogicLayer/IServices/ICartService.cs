@@ -10,9 +10,9 @@ namespace BuisnessLogicLayer.IServices
 {
     public interface ICartService
     {
-        public Task<ResponseDto?> GetCartAsync(long userId);
-        Task<ResponseDto> AddToCartAsync(AddToCartRequestDto addToCartRequestDto);
-        Task<ResponseDto> UpdateProductQuantityAsync(UpdateProductQtyRequestDto updateProduct);
-        Task DeleteItemFromCartAsync(long productId, long userId);
+        public Task<IEnumerable<CartItem>> GetAllCartItemsAsync(long userId);
+        public Task<CartItem?> AddToCartAsync(AddToCartRequestDto addToCartRequestDto);
+        public Task<CartItem?> UpdateProductQuantityAsync(UpdateProductQtyRequestDto updateProduct);
+        public Task<CartItem?> DeleteItemFromCartAsync(long cartItemId);
     }
 }

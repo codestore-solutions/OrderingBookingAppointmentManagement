@@ -1,15 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EntityLayer.Common;
+using System.ComponentModel.DataAnnotations;
 
 namespace EntityLayer.Dto
 {
     public class UpdateProductQtyRequestDto
     {
-        public long UserId { get; set; }
-        public long ProductId { get; set; }
+        [Required]
+        public long CartItemId { get; set; }
 
         [Required]
-        [Range(1, 10, ErrorMessage = "We are Sorry! Only 10 Units allowed in each Order")]
+        [Range(1, 10, ErrorMessage = StringConstant.MaxQuantityMessage)]
         public int ProductQuantity { get; set; }
-
     }
 }

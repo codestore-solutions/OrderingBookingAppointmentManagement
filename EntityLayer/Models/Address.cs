@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Entitites.Common.EnumConstants;
 
 namespace EntityLayer.Models
 {
@@ -43,12 +44,7 @@ namespace EntityLayer.Models
         public string PhoneNumber { get; set; } = null!;
         public string? AlternateNumber { get; set; }
 
-        public enum AddressesType
-        {
-            ShippingAddress = 1,
-            BillingAddress = 2
-        }
-        
+        [Required]
         public AddressesType AddressType { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }

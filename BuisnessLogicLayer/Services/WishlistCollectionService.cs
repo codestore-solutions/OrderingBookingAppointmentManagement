@@ -23,7 +23,7 @@ namespace OrderingBooking.BL.Services
 
         public async Task<ResponseDto> GetWishlistCollectionById(long WishListCollectionId)
         {
-            var collection = await unitOfWork.WishlistCollectionRepository.GetAll().Include(c=>c.WishlistItems)
+            var collection = await unitOfWork.WishlistCollectionRepository.GetAllAsQueryable().Include(c=>c.WishlistItems)
             .FirstOrDefaultAsync(u => u.WishlistCollectionId == WishListCollectionId);
 
             return new ResponseDto
@@ -56,7 +56,7 @@ namespace OrderingBooking.BL.Services
 
         public async Task<ResponseDto> GetAllWishlistCollections(long userId)
         {
-            var allCollections = await unitOfWork.WishlistCollectionRepository.GetAll().Include("WishlistItems").Where(u => u.UserId == userId).ToListAsync();
+            var allCollections = await unitOfWork.WishlistCollectionRepository.GetAllAsQueryable().Include("WishlistItems").Where(u => u.UserId == userId).ToListAsync();
             return new ResponseDto
             {
                 StatusCode = 200,

@@ -38,7 +38,7 @@ namespace BuisnessLogicLayer.Services
         }
         public async Task<ResponseDto> DeleteProductFromWishlistAsync(long wishlistCollectionId, long productId, long? varientId)
         {
-            var itemToBeDeleted = await unitOfWork.WishListRepository.GetAll().FirstOrDefaultAsync(p => p.WishListCollectionId == wishlistCollectionId
+            var itemToBeDeleted = await unitOfWork.WishListRepository.GetAllAsQueryable().FirstOrDefaultAsync(p => p.WishListCollectionId == wishlistCollectionId
             && p.ProductId == productId
             && (varientId == null || p.VarientId == varientId));
 
@@ -65,7 +65,7 @@ namespace BuisnessLogicLayer.Services
         }
         public async Task<ResponseDto> UpdateProductsQuantityInCollectionAsync(long wishlistCollecttionId, UpdateQuantityDto quantityDto)
         {
-            var productItem = await unitOfWork.WishListRepository.GetAll().FirstOrDefaultAsync(u => u.WishListCollectionId == wishlistCollecttionId
+            var productItem = await unitOfWork.WishListRepository.GetAllAsQueryable().FirstOrDefaultAsync(u => u.WishListCollectionId == wishlistCollecttionId
             && (quantityDto.VarientId == null || u.VarientId == quantityDto.VarientId)
             && u.ProductId == quantityDto.ProductId);
 

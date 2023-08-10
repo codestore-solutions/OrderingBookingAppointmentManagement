@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repository
 {
-    public class CartItemsRepository : GenericRepository<CartItems>, ICartItemsRepository
+    public class CartItemsRepository : GenericRepository<CartItem>, ICartItemsRepository
     {
         public CartItemsRepository(OrderDbContext dbContext) : base(dbContext)
         {

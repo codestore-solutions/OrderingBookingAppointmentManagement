@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using EntityLayer.Common;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
@@ -26,23 +27,12 @@ namespace OrderingBooking.API.MiddleWares
             {
                 var errorId = Guid.NewGuid();
                 logger.LogError(ex, $"{errorId}: {ex.Message}");
-
                 httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 httpContext.Response.ContentType = "application/json";
-
-                /* var error = new
-                 {
-                     TraceId = errorId.ToString(),
-                     Message = "Something Went Wrong, please contact to the administrator."
-                 };*/
-
-                string error = errorId + " :Something Went Wrong, We are looking resolving Soon";
+                string error ="TraceId: " + errorId +", "+ StringConstant.GlobalExceptionMessage;
                 await httpContext.Response.WriteAsync(error);
             }
         }
-
-
-
     }
 }
 

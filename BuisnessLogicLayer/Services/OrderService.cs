@@ -79,17 +79,15 @@ namespace OrderingBooking.BL.Services
                 Message     = StringConstant.SuccessMessage
             };
         }
-        public async Task<ResponseDto> GetAllOrdersAsync(long userId)
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync(long userId)
         {
-            var orders = await unitOfWork.OrderRepository.GetAll().Include(c => c.OrderItems).Where(u => u.UserId == userId).ToListAsync();
+            var orders = await unitOfWork.OrderRepository.GetAllAsQueryable().Where(u => u.UserId == userId).ToListAsync();
 
-            return new ResponseDto
+            foreach(var order in orders)
             {
-                StatusCode  = 200,
-                Success     = true,
-                Data        = orders,
-                Message     = StringConstant.SuccessMessage
-            };
+                var orderItems = order.OrderItems.ToList();
+            }
+            return orders;
         }
         public async Task<ResponseDto> GetOrdersList(List<long> orderIds)
         {

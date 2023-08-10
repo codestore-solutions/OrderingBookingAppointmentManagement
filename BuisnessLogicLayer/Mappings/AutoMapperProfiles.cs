@@ -16,11 +16,12 @@ namespace BuisnessLogicLayer.Mappings
     {
         public AutoMapperProfiles()
         {
-            CreateMap<AddNewAddressDto, Address>().ReverseMap();
+            CreateMap<AddAddressDto, Address>().ReverseMap();
             CreateMap<UpdateAddressDto, Address>().ReverseMap();    
             CreateMap<CreateOrderDto, Order>().ReverseMap();
             CreateMap<OrderItemsDto, OrderItems>().ReverseMap();
             CreateMap<AddProductsToCollectionDto, WishlistItems>().ReverseMap();
+            CreateMap<AddToCartRequestDto, CartItem>().ReverseMap();   
         }
     }
 }
