@@ -28,6 +28,7 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [MapToApiVersion("1.0")]
+        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<ActionResult<ResponseDto>> GetCartAsync([FromQuery][Required] long userId)
         {
 
@@ -47,6 +48,7 @@ namespace OrderingBooking.API.Controllers
         [HttpPost("add")]
         [ValidateModel]
         [MapToApiVersion("1.0")]
+        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<ActionResult<ResponseDto>> AddToCartAsync(AddToCartRequestDto addToCartRequestDto)
         {
             var result = await cartService.AddToCartAsync(addToCartRequestDto);
@@ -65,6 +67,7 @@ namespace OrderingBooking.API.Controllers
         [HttpPut("updateQty")]
         [ValidateModel]
         [MapToApiVersion("1.0")]
+        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> UpdateQuantityAsync(UpdateProductQtyRequestDto updateProductDto)
         {
             var result = await cartService.UpdateProductQuantityAsync(updateProductDto);
@@ -82,6 +85,7 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpDelete("delete")]
         [MapToApiVersion("1.0")]
+        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> DeleteProductFromOrderLine([FromQuery][Required] long cartItemId)
         {
             var result = await cartService.DeleteItemFromCartAsync(cartItemId);

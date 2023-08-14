@@ -12,12 +12,21 @@ namespace Entitites.Dto
     {
         [Required]
         public long UserId { get; set; }
+
+        [Required]
         public long ProductId { get; set; }
-        public long? VarientId { get; set; }
+
+        [Required]
+        public long VariantId { get; set; }
+
+        [Required]
         public long StoreId { get; set; }
+
+        [Required]
         public double Price { get; set; }
+
+        [Required]
         public int Quantity { get; set; }
-        public DateTime CreatedOn { get; set; }
         public long WishListCollectionId { get; set; }
     }
 }

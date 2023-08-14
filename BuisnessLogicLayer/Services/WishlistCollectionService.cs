@@ -21,21 +21,20 @@ namespace OrderingBooking.BL.Services
             this.mapper = mapper;
         }
 
-        public async Task<ResponseDto> GetWishlistCollectionById(long WishListCollectionId)
+        public async Task<WishlistCollection?> GetWishlistCollectionById(long wishListCollectionId)
         {
-            var collection = await unitOfWork.WishlistCollectionRepository.GetAllAsQueryable().Include(c=>c.WishlistItems)
-            .FirstOrDefaultAsync(u => u.WishlistCollectionId == WishListCollectionId);
+            var wishlistCollection = await unitOfWork.WishlistCollectionRepository.GetAsQueryable()
+            .FirstOrDefaultAsync(u => u.WishlistCollectionId == wishListCollectionId);
 
-            return new ResponseDto
+            // Lazy Loading 
+            if (wishlistCollection != null)
             {
-                StatusCode = 200,
-                Success = true,
-                Data = collection,
-                Message = StringConstant.SuccessMessage
-            };
+                var wishlistItems = wishlistCollection.WishlistItems;
+            }
+            return wishlistCollection;
         }
 
-        public async Task<ResponseDto> AddNewWishlistCollection(WishlistCollectionDto collectionDto)
+        public async Task<WishlistCollection?> AddNewWishlistCollection(WishlistCollectionDto collectionDto)
         {
             var newWishlistCollection = new WishlistCollection
             {
@@ -43,65 +42,36 @@ namespace OrderingBooking.BL.Services
                 CollectionName = collectionDto.CollectionName,
             };
             await unitOfWork.WishlistCollectionRepository.AddAsync(newWishlistCollection);
-            await unitOfWork.SaveAsync();
+            bool saveResult = await unitOfWork.SaveAsync();
 
-            return new ResponseDto
-            {
-                StatusCode = 200,
-                Success = true,
-                Data = newWishlistCollection,
-                Message = StringConstant.SuccessMessage
-            };
+            return saveResult ? newWishlistCollection : null;
         }
 
-        public async Task<ResponseDto> GetAllWishlistCollections(long userId)
+        public async Task<IEnumerable<WishlistCollection>> GetAllWishlistCollections(long userId)
         {
-            var allCollections = await unitOfWork.WishlistCollectionRepository.GetAllAsQueryable().Include("WishlistItems").Where(u => u.UserId == userId).ToListAsync();
-            return new ResponseDto
-            {
-                StatusCode = 200,
-                Success = true,
-                Data = allCollections,
-                Message = StringConstant.SuccessMessage
-            };
+            var allCollections = await unitOfWork.WishlistCollectionRepository.GetAsQueryable().Include("WishlistItems").Where(u => u.UserId == userId).ToListAsync();
+            return allCollections;
         }
 
-        public async Task<ResponseDto> DeleteCollectionAsync(long wishlistCollectionId)
+        public async Task<WishlistCollection?> DeleteCollectionAsync(long wishlistCollectionId)
         {
             var deletedCollection = await unitOfWork.WishlistCollectionRepository.DeleteAsync(wishlistCollectionId);
-            bool saveResult = await unitOfWork.SaveAsync();
-
-            return new ResponseDto
+            if(deletedCollection != null)
             {
-                StatusCode = saveResult ? 200 : 500,
-                Success = saveResult,
-                Data = deletedCollection,
-                Message = saveResult ? StringConstant.SuccessMessage : StringConstant.ErrorMessage
-            };
+                await unitOfWork.SaveAsync();
+            }
+            return deletedCollection;
         }
 
-        public async Task<ResponseDto> UpdateCollectionNameAsync(long wishlistCollectionId, UpdateCollectionNameDto updateCollectionNameDto)
+        public async Task<WishlistCollection?> UpdateCollectionNameAsync(long wishlistCollectionId, UpdateCollectionNameDto updateCollectionNameDto)
         {
             var wishlistCollection = await unitOfWork.WishlistCollectionRepository.GetByIdAsync(wishlistCollectionId);
-            if (wishlistCollection == null)
+            if (wishlistCollection != null)
             {
-                return new ResponseDto
-                {
-                    StatusCode = 400,
-                    Success = false,
-                    Data = StringConstant.InvalidInputError,
-                    Message = StringConstant.ErrorMessage
-                };
+                wishlistCollection.CollectionName = updateCollectionNameDto.CollectionName;
+                await unitOfWork.SaveAsync();
             }
-            wishlistCollection.CollectionName = updateCollectionNameDto.CollectionName;
-            bool saveResult = await unitOfWork.SaveAsync();
-            return new ResponseDto
-            {
-                StatusCode = saveResult ? 200 : 500,
-                Success = saveResult,
-                Data = wishlistCollection,
-                Message = StringConstant.SuccessMessage
-            };
+            return wishlistCollection;
         }
 
     }

@@ -10,7 +10,7 @@ namespace Entitites.Dto
     public class UpdateCollectionNameDto
     {
         [Required]
-        [StringLength(50, MinimumLength =1,ErrorMessage ="Maximum 50 Characters are allowed")]
+        [StringLength(100)]
         public string CollectionName { get; set; } = null!;
     }
 }

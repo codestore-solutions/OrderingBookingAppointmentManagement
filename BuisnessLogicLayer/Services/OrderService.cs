@@ -4,120 +4,86 @@ using DataAccessLayer.IRepository;
 using Entitites.Dto;
 using Entitites.Models;
 using EntityLayer.Common;
-using EntityLayer.Dto;
 using EntityLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using OrderingBooking.BL.IServices;
 using System.Text.Json;
 
 namespace OrderingBooking.BL.Services
 {
-    public class OrderService:IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public OrderService(IUnitOfWork unitOfWork,IMapper mapper)
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
 
-        public async Task<ResponseDto> CreateOrderAsync(CreateOrderDto createOrderDto)
+        public async Task<IEnumerable<Order>> CreateOrderAsync(CreateOrderDto createOrderDto)
         {
             // Connection string setup for azure bus service (queue)
             var connectionString = StringConstant.QueueConnectionString;
             var client = new ServiceBusClient(connectionString);
             var sender = client.CreateSender(StringConstant.QueueName);
 
-            var response = new List<Object>();
+            var listOfOrders = new List<Order>();
 
-            foreach(var ordersforVendors in createOrderDto.OrdersForVendors)
+            foreach (var ordersforVendors in createOrderDto.OrdersForVendors)
             {
                 long productCount = 0;
                 var newOrder = new Order();
                 mapper.Map(createOrderDto, newOrder);
-                DateTime tomorrowDate            = DateTime.Now.AddDays(1);
-                newOrder.VendorId                = ordersforVendors.VendorId;
-                newOrder.DeliveryCharges         = ordersforVendors.DeliveryCharges;
-                newOrder.DeliveryDate            = tomorrowDate;
+                DateTime tomorrowDate = DateTime.Now.AddDays(1);
+                newOrder.VendorId = ordersforVendors.VendorId;
+                newOrder.DeliveryCharges = ordersforVendors.DeliveryCharges;
+                newOrder.DeliveryDate = tomorrowDate;
 
                 foreach (var orderItem in ordersforVendors.OrderItems)
                 {
                     var newOrderItem = new OrderItems();
-                   
+
                     mapper.Map(orderItem, newOrderItem);
-                    newOrderItem.OrderId   = newOrder.OrderId;                   
+                    newOrderItem.OrderId = newOrder.OrderId;
                     productCount++;
-                    newOrder.OrderItems.Add(newOrderItem);     
+                    newOrder.OrderItems.Add(newOrderItem);
                 }
                 newOrder.ProductCount = productCount;
-                response.Add(newOrder);
+                listOfOrders.Add(newOrder);
 
                 await unitOfWork.OrderRepository.AddAsync(newOrder);
                 await unitOfWork.SaveAsync();
 
                 // Creating order and then pushing it into the queue
-                var queueObj = new SendOrderToQueueDto();
-
-                queueObj.orderId = newOrder.OrderId;
-                queueObj.customerId = createOrderDto.UserId;
-                queueObj.vendorId = ordersforVendors.VendorId;
-                queueObj.shippingAddressId = newOrder.ShippingAddressId;
+                var queueObj = new SendOrderToQueueDto
+                {
+                    orderId = newOrder.OrderId,
+                    customerId = createOrderDto.UserId,
+                    vendorId = ordersforVendors.VendorId,
+                    shippingAddressId = newOrder.ShippingAddressId
+                };
 
                 var body = JsonSerializer.Serialize(queueObj);
                 var message = new ServiceBusMessage(body);
                 await sender.SendMessageAsync(message);
             }
-
-            return new ResponseDto
-            {
-                StatusCode  = 200,
-                Success     = true,
-                Data        = response,
-                Message     = StringConstant.SuccessMessage
-            };
+            return listOfOrders;
         }
         public async Task<IEnumerable<Order>> GetAllOrdersAsync(long userId)
         {
-            var orders = await unitOfWork.OrderRepository.GetAllAsQueryable().Where(u => u.UserId == userId).ToListAsync();
+            var orders = await unitOfWork.OrderRepository.GetByCondition(u => u.UserId == userId)
+            .Include(c => c.OrderItems).ToListAsync();
 
-            foreach(var order in orders)
-            {
-                var orderItems = order.OrderItems.ToList();
-            }
             return orders;
         }
-        public async Task<ResponseDto> GetOrdersList(List<long> orderIds)
+        public async Task<IEnumerable<Order>> GetOrdersListAsync(List<long> orderIds)
         {
-            var listOfOrders = new List<Object>();
+            var listOfOrders = await unitOfWork.OrderRepository.GetAsQueryable()
+                .Where(entity => orderIds.Contains(entity.OrderId)).ToListAsync();
 
-            foreach (var orderId in orderIds)
-            {
-                var order = await unitOfWork.OrderRepository.GetByIdAsync(orderId);                
-                if (order == null)
-                {
-                    return new ResponseDto
-                    {
-                        StatusCode = 400,
-                        Success = false,
-                        Data = StringConstant.InvalidInputError,
-                        Message = StringConstant.ErrorMessage
-                    };
-                }
-                var orderItems = order.OrderItems;
-                listOfOrders.Add(order);
-            }
-
-            return new ResponseDto
-            {
-                Success = true,
-                StatusCode = 200,
-                Data = listOfOrders,
-                Message = StringConstant.SuccessMessage
-            };
-
+            return listOfOrders;
         }
 
     }

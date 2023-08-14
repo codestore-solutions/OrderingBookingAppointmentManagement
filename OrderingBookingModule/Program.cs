@@ -17,6 +17,7 @@ using OrderingBooking.BL.IServices;
 using OrderingBooking.BL.Services;
 using OrderingBooking.API.MiddleWares;
 using EntityLayer.Common;
+using OrderingBooking.API.CustomActionFilter;
 
 namespace OrderingBooking.API
 {
@@ -28,14 +29,18 @@ namespace OrderingBooking.API
             // Add services to the container.
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()
-                .WriteTo.File(StringConstant.LogPath, rollingInterval: RollingInterval.Minute)  
-                .MinimumLevel.Warning()
+                .WriteTo.File(StringConstant.LogPath, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
             builder.Logging.ClearProviders();
             builder.Logging.AddSerilog(logger);
 
             builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.AddService<LoggingActionFilter>();
+            });
+            
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
@@ -115,6 +120,7 @@ namespace OrderingBooking.API
             builder.Services.AddScoped<IWishlistCollectionService, WishlistCollectionService>();
             builder.Services.AddScoped<IAddressService, AddressService>();
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<LoggingActionFilter>();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowOrigin", builder =>
@@ -130,7 +136,7 @@ namespace OrderingBooking.API
             builder.Services.AddSingleton<AddressService>(sp =>
             {
                 var httpClient = sp.GetRequiredService<HttpClient>();
-                var apiKey = "YOUR_API_KEY"; // Replace with your Google Maps Geocoding API key
+                var apiKey = "API_KEY"; // Replace with Google Maps Geocoding API key
                 //return new AddressService(httpClient, apiKey);
             });*/
 

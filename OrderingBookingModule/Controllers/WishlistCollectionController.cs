@@ -1,12 +1,10 @@
 ﻿using Entitites.Dto;
+using EntityLayer.Common;
 using EntityLayer.Dto;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using OrderingBooking.API.CustomActionFilter;
 using OrderingBooking.BL.IServices;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
 
 namespace OrderingBooking.API.Controllers
 {
@@ -23,26 +21,37 @@ namespace OrderingBooking.API.Controllers
         }
 
         /// <summary>
-        /// Get Wishlist Collection By Id
+        /// Get Wishlist Collection By Id.
         /// </summary>
-        /// <param name="WishListCollectionId"></param>
+        /// <param name="wishListCollectionId"></param>
         /// <returns></returns>
         [HttpGet("getCollectionById")]
-        public async Task<IActionResult> GetWishlistCollectionById([FromQuery][Required] long WishListCollectionId)
+        [MapToApiVersion("1.0")]
+        [ServiceFilter(typeof(LoggingActionFilter))]
+        public async Task<IActionResult> GetWishlistCollectionById([FromQuery][Required] long wishListCollectionId)
         {
-            return Ok(await wishlistCollectionService.GetWishlistCollectionById(WishListCollectionId));
+            var result = await wishlistCollectionService.GetWishlistCollectionById(wishListCollectionId);
+            return result == null ? NotFound(new { message = StringConstant.ResourceNotFoundError })
+                : Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.SuccessMessage });
         }
 
         /// <summary>
-        /// Add New Collection
+        /// Add new wishlist collection.
         /// </summary>
         /// <param name="collectionDto"></param>
         /// <returns></returns>
         [HttpPost("add-collection")]
+        [ValidateModel]
         [MapToApiVersion("1.0")]
+        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> AddNewCollection(WishlistCollectionDto collectionDto)
         {
-            return Ok(await wishlistCollectionService.AddNewWishlistCollection(collectionDto));
+            var result = await wishlistCollectionService.AddNewWishlistCollection(collectionDto);
+            if (result != null)
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.AddedMessage });
+            }
+            return StatusCode(500, StringConstant.DatabaseMessage);
         }
 
         /// <summary>
@@ -52,11 +61,16 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpGet("get-all-collections")]
         [MapToApiVersion("1.0")]
+        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> GetAllCollectionsName([FromQuery][Required] long userId)
         {
-            return Ok(await wishlistCollectionService.GetAllWishlistCollections(userId));
+            var result = await wishlistCollectionService.GetAllWishlistCollections(userId);
+            if (result.Any())
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.SuccessMessage });
+            }
+            return NotFound(StringConstant.ResourceNotFoundError);
         }
-
 
         /// <summary>
         /// Delete a Wishlist Collection 
@@ -64,22 +78,36 @@ namespace OrderingBooking.API.Controllers
         /// <param name="wishlistCollectionId"></param>
         /// <returns></returns>
         [HttpDelete]
-        public async Task<IActionResult> DeleteCollectionAsync([FromQuery][Required]long wishlistCollectionId)
+        [MapToApiVersion("1.0")]
+        [ServiceFilter(typeof(LoggingActionFilter))]
+        public async Task<IActionResult> DeleteCollectionAsync([FromQuery][Required] long wishlistCollectionId)
         {
-            return Ok(await wishlistCollectionService.DeleteCollectionAsync(wishlistCollectionId));
+            var result = await wishlistCollectionService.DeleteCollectionAsync(wishlistCollectionId);
+            if (result != null)
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.DeletedMessage });
+            }
+            return NotFound(new { message = StringConstant.ResourceNotFoundError });
         }
 
         /// <summary>
         /// Update wishlist collection name.
         /// </summary>
         /// <param name="wishlistCollectionId"></param>
-        /// <param name="nameDto"></param>
+        /// <param name="updateCollectionNameDto"></param>
         /// <returns></returns>
         [HttpPut("update-collection-name")]
+        [MapToApiVersion("1.0")]
         [ValidateModel]
-        public async Task<IActionResult> UpdateCollectionNameAsync([FromQuery] long wishlistCollectionId, [FromBody] UpdateCollectionNameDto nameDto)
+        [ServiceFilter(typeof(LoggingActionFilter))]
+        public async Task<IActionResult> UpdateCollectionNameAsync([FromQuery] long wishlistCollectionId, [FromBody] UpdateCollectionNameDto updateCollectionNameDto)
         {
-            return Ok(await wishlistCollectionService.UpdateCollectionNameAsync(wishlistCollectionId,nameDto)); 
+            var result = await wishlistCollectionService.UpdateCollectionNameAsync(wishlistCollectionId, updateCollectionNameDto);
+            if (result != null)
+            {
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.UpdatedMessage });
+            }
+            return NotFound(new { message = StringConstant.ResourceNotFoundError });
         }
 
     }

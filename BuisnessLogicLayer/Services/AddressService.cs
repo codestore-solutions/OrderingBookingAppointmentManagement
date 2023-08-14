@@ -34,7 +34,7 @@ namespace OrderingBooking.BL.Services
 
         public async Task<IEnumerable<Address>> GetAllAddressesAsync(long userId)
         {
-            return await unitOfWork.AddressRepository.GetAllAsQueryable().Where(u => u.UserId == userId).ToListAsync();
+            return await unitOfWork.AddressRepository.GetAsQueryable().Where(u => u.UserId == userId).ToListAsync();
         }
 
         public async Task<Address?> GetAddressByIdAsync(long shippingAddressId)
@@ -55,17 +55,9 @@ namespace OrderingBooking.BL.Services
         // Required for Order Processing Module for data mapping.
         public async Task<IEnumerable<Address>> GetMultipleAddressesAsync(List<long> addressIds)
         {
-            var addressesList = new List<Address>();
-
-            foreach (var addressId in addressIds)
-            {
-                var address = await unitOfWork.AddressRepository.GetByIdAsync(addressId);
-                if (address != null)
-                {
-                    addressesList.Add(address);
-                }
-            }
-            return addressesList;
+            var listOfAddresses = await unitOfWork.AddressRepository.GetAsQueryable()
+                .Where(entity => addressIds.Contains(entity.Id)).ToListAsync();
+            return listOfAddresses;
         }
 
         public async Task<Address?> UpdateAddressAsync(long addressId, UpdateAddressDto addressDto)
@@ -94,7 +86,7 @@ namespace OrderingBooking.BL.Services
          }*/
     }
 
-    public class GeocodingResponse
+    /*public class GeocodingResponse
     {
         [JsonProperty("results")]
         public List<Result> Results { get; set; }
@@ -104,5 +96,5 @@ namespace OrderingBooking.BL.Services
     {
         [JsonProperty("formatted_address")]
         public string FormattedAddress { get; set; }
-    }
+    }*/
 }

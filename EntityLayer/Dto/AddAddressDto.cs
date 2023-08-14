@@ -43,7 +43,6 @@ namespace Entitites.Dto
         [StringLength(15, MinimumLength = 10)]
         [Phone]
         public string? AlternateNumber { get; set; }
-
         public AddressesType AddressType { get; set; }
 
         [Range(0.0, 100.0)]

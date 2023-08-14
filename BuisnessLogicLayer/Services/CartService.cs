@@ -26,12 +26,12 @@ namespace BuisnessLogicLayer.Services
 
         public async Task<IEnumerable<CartItem>> GetAllCartItemsAsync(long userId)
         {
-            var cartItems = await unitOfWork.CartItemsRepository.GetAllAsQueryable().Where(c => c.UserId == userId).ToListAsync();
+            var cartItems = await unitOfWork.CartItemsRepository.GetAsQueryable().Where(c => c.UserId == userId).ToListAsync();
             return cartItems;         
         }
         public async Task<CartItem?> AddToCartAsync(AddToCartRequestDto addToCartRequestDto)
         {
-            var cartItem = await unitOfWork.CartItemsRepository.GetAllAsQueryable().FirstOrDefaultAsync(u => 
+            var cartItem = await unitOfWork.CartItemsRepository.GetAsQueryable().FirstOrDefaultAsync(u => 
             u.ProductId == addToCartRequestDto.ProductId
             && u.VariantId == addToCartRequestDto.VariantId
             && u.UserId == addToCartRequestDto.UserId);

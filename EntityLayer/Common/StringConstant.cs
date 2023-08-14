@@ -32,5 +32,9 @@ namespace EntityLayer.Common
         public const string LogPath                             = "Logs/All_Logs-.txt";
         public const string ConnectionStringPath                = "OrderingBookingConnectionString";
         public const string GlobalExceptionMessage              = "Something Went Wrong, Please Contact to the administrator.";
+        public const string OrderCreatedMessage                 = "Order created successfully";
+        public const string AddedMessage                        = "Added successfully";
+        public const string DeletedMessage                      = "Deleted successfully";
+        public const string UpdatedMessage                      = "Updated successfully";
     }
 }
