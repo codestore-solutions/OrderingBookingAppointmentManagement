@@ -36,6 +36,7 @@ namespace OrderingBooking.BL.Services
                 long productCount = 0;
                 var newOrder = new Order();
                 mapper.Map(createOrderDto, newOrder);
+
                 DateTime tomorrowDate = DateTime.Now.AddDays(1);
                 newOrder.VendorId = ordersforVendors.VendorId;
                 newOrder.DeliveryCharges = ordersforVendors.DeliveryCharges;
@@ -44,7 +45,6 @@ namespace OrderingBooking.BL.Services
                 foreach (var orderItem in ordersforVendors.OrderItems)
                 {
                     var newOrderItem = new OrderItems();
-
                     mapper.Map(orderItem, newOrderItem);
                     newOrderItem.OrderId = newOrder.OrderId;
                     productCount++;
@@ -75,7 +75,6 @@ namespace OrderingBooking.BL.Services
         {
             var orders = await unitOfWork.OrderRepository.GetByCondition(u => u.UserId == userId)
             .Include(c => c.OrderItems).ToListAsync();
-
             return orders;
         }
         public async Task<IEnumerable<Order>> GetOrdersListAsync(List<long> orderIds)
@@ -85,6 +84,5 @@ namespace OrderingBooking.BL.Services
 
             return listOfOrders;
         }
-
     }
 }

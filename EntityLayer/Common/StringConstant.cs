@@ -36,5 +36,7 @@ namespace EntityLayer.Common
         public const string AddedMessage                        = "Added successfully";
         public const string DeletedMessage                      = "Deleted successfully";
         public const string UpdatedMessage                      = "Updated successfully";
+        public const string TokenMissing                        = "Authorization token is missing.";
+
     }
 }

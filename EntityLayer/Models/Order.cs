@@ -46,19 +46,6 @@ namespace EntityLayer.Models
         [Required]
         public double TipAmount { get; set; }
 
-        public enum PaymentStatus
-        {
-            Failed     = 0,
-            Successful = 1,
-            Pending    = 2          
-        }   
-
-        public enum PaymentMode
-        {
-            Online = 1,
-            COD    = 2
-        }
-
         [Column(TypeName = "date")]
         public DateTime DeliveryDate { get; set; }
         public long DeliverySlotId { get; set; }
