@@ -34,25 +34,33 @@ namespace OrderingBooking.BL.Services
             foreach (var ordersforVendors in createOrderDto.OrdersForVendors)
             {
                 long productCount = 0;
+                //double itemTotal = 0;
                 var newOrder = new Order();
                 mapper.Map(createOrderDto, newOrder);
 
-                DateTime tomorrowDate = DateTime.Now.AddDays(1);
+                // Hardcoded delivery date
+                DateTime deliveryDate = DateTime.Now.AddDays(2);
                 newOrder.VendorId = ordersforVendors.VendorId;
                 newOrder.DeliveryCharges = ordersforVendors.DeliveryCharges;
-                newOrder.DeliveryDate = tomorrowDate;
+                newOrder.DeliveryDate = deliveryDate;
 
                 foreach (var orderItem in ordersforVendors.OrderItems)
                 {
                     var newOrderItem = new OrderItems();
                     mapper.Map(orderItem, newOrderItem);
                     newOrderItem.OrderId = newOrder.OrderId;
+                   // itemTotal += (orderItem.Price * orderItem.Quantity);
                     productCount++;
                     newOrder.OrderItems.Add(newOrderItem);
                 }
+                // Number of Products in one order for same vendor.
                 newOrder.ProductCount = productCount;
+               // newOrder.ItemTotal    = itemTotal;
+                newOrder.CreatedDate  = DateTime.Now;
+                newOrder.UpdatedOn    = DateTime.Now;
+                // Invoice Amount Total
+               // newOrder.TotalInvoiceAmount = itemTotal + createOrderDto.TipAmount + createOrderDto.TaxesAmount + ordersforVendors.DeliveryCharges;
                 listOfOrders.Add(newOrder);
-
                 await unitOfWork.OrderRepository.AddAsync(newOrder);
                 await unitOfWork.SaveAsync();
 
@@ -71,10 +79,10 @@ namespace OrderingBooking.BL.Services
             }
             return listOfOrders;
         }
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync(long userId)
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync(long userId , int pageNumber , int limit)
         {
             var orders = await unitOfWork.OrderRepository.GetByCondition(u => u.UserId == userId)
-            .Include(c => c.OrderItems).ToListAsync();
+            .Include(c => c.OrderItems).OrderByDescending(c=>c.UpdatedOn).Skip((pageNumber-1)*limit).Take(limit).ToListAsync();
             return orders;
         }
         public async Task<IEnumerable<Order>> GetOrdersListAsync(List<long> orderIds)

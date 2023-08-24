@@ -13,7 +13,6 @@ namespace OrderingBooking.API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService orderService;
-
         public OrderController(IOrderService orderService)
         {
             this.orderService = orderService;
@@ -27,7 +26,6 @@ namespace OrderingBooking.API.Controllers
         [HttpPost("create-order")]
         [MapToApiVersion("1.0")]
         [ValidateModel]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> CreateNewOrderAsync(CreateOrderDto createOrderDto)
         {
             var result = await orderService.CreateOrderAsync(createOrderDto);
@@ -39,16 +37,17 @@ namespace OrderingBooking.API.Controllers
         }
 
         /// <summary>
-        /// Get all order details by userId
+        ///  Get all order details by userId.
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet]
         [MapToApiVersion("1.0")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
-        public async Task<IActionResult> GetAllOrdersAsync([FromQuery][Required] long userId)
+        public async Task<IActionResult> GetAllOrdersAsync([FromQuery][Required] long userId, [FromQuery][Required] int pageNumber=1 ,[FromQuery][Required]int limit=10)
         {
-            var result = await orderService.GetAllOrdersAsync(userId);
+            var result = await orderService.GetAllOrdersAsync(userId, pageNumber, limit);
             if (result.Any())
             {
                 return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.SuccessMessage });
@@ -63,7 +62,6 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpGet("listOfOrders")]
         [MapToApiVersion("1.0")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> GetOrdersList([FromQuery] List<long> orderIds)
         {
             var result = await orderService.GetOrdersListAsync(orderIds);
@@ -73,5 +71,6 @@ namespace OrderingBooking.API.Controllers
             }
             return NotFound(new { message = StringConstant.ResourceNotFoundError });
         }
+
     }
 }

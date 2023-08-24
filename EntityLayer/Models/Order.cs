@@ -26,15 +26,22 @@ namespace EntityLayer.Models
         [Range(1, long.MaxValue)]
         public long VendorId { get; set; }
 
+        //
+      /*  public double ItemTotal { get; set; }
+        public double TotalInvoiceAmount { get; set; }
+        public double TaxesAmount { get; set; }*/
+        
         [Required]
         [Range(0.0, double.MaxValue)]
         public double DeliveryCharges { get; set; }
 
         [Required]
+        public double TipAmount { get; set; }
+
+        [Required]
         public virtual ICollection<OrderItems> OrderItems { get; set; } = new List<OrderItems>();
 
         [Required]
-        [Range(1, long.MaxValue)]
         public long PaymentId { get; set; }
 
         [Required]
@@ -42,9 +49,6 @@ namespace EntityLayer.Models
 
         [Required]
         public DateTime UpdatedOn { get; set; }
-
-        [Required]
-        public double TipAmount { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime DeliveryDate { get; set; }
