@@ -45,7 +45,7 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> GetAllOrdersAsync([FromQuery][Required] long userId, [FromQuery][Required] int pageNumber=1 ,[FromQuery][Required]int limit=10)
+        public async Task<IActionResult> GetAllOrdersAsync([FromQuery][Required] long userId, [FromQuery][Required] int pageNumber = 1, [FromQuery][Required] int limit = 10)
         {
             var result = await orderService.GetAllOrdersAsync(userId, pageNumber, limit);
             if (result.Any())

@@ -27,7 +27,6 @@ namespace OrderingBooking.API.Controllers
         /// <param name="userId" example="5"></param>
         /// <returns></returns>
         [HttpGet("get-all-addresses")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> GetAllAddressesByUserId([FromQuery][Required] long userId)
         {
             var result = await addressService.GetAllAddressesAsync(userId);
@@ -44,7 +43,6 @@ namespace OrderingBooking.API.Controllers
         /// <param name="addressId"></param>
         /// <returns></returns>
         [HttpGet("get-address")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> GetAddress([FromQuery][Required] long addressId)
         {
             var result = await addressService.GetAddressByIdAsync(addressId);
@@ -61,7 +59,6 @@ namespace OrderingBooking.API.Controllers
         /// <param name="shippingAddressIds"></param>
         /// <returns></returns>
         [HttpGet("getMultipleAddress")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> GetAddressesInBulk([FromQuery] List<long> shippingAddressIds)
         {
             var result = await addressService.GetMultipleAddressesAsync(shippingAddressIds);
@@ -79,7 +76,6 @@ namespace OrderingBooking.API.Controllers
         /// <param name="addressDto"></param>
         /// <returns></returns>
         [HttpPost("add-address")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         [ValidateModel]
         public async Task<ActionResult<ResponseDto>> AddAddressAsync([FromQuery][Required] long userId, [FromBody][Required] AddAddressDto addressDto)
         {
@@ -97,7 +93,6 @@ namespace OrderingBooking.API.Controllers
         /// <param name="addressId"></param>
         /// <returns></returns>
         [HttpDelete("delete-address")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> DeleteAddressAsync([FromQuery][Required] long addressId)
         {
             var result = await addressService.DeleteAddressAsync(addressId);
@@ -115,7 +110,6 @@ namespace OrderingBooking.API.Controllers
         /// <param name="addressDto"></param>
         /// <returns></returns>
         [HttpPut("update-address")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         [ValidateModel]
         public async Task<IActionResult> UpdateAddressAsync([FromQuery][Required] long addressId, UpdateAddressDto addressDto)
         {

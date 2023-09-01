@@ -1,24 +1,18 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using BuisnessLogicLayer.IServices;
 using DataAccessLayer.IRepository;
-using EntityLayer.Common;
 using EntityLayer.Dto;
 using EntityLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using Microsoft.Win32.SafeHandles;
-using System.Net.WebSockets;
-using System.Reflection.Metadata.Ecma335;
 
 namespace BuisnessLogicLayer.Services
 {
-    public class CartService: ICartService
+    public class CartService : ICartService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public CartService(IUnitOfWork unitOfWork, IMapper mapper) 
+        public CartService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -27,21 +21,22 @@ namespace BuisnessLogicLayer.Services
         public async Task<IEnumerable<CartItem>> GetAllCartItemsAsync(long userId)
         {
             var cartItems = await unitOfWork.CartItemsRepository.GetAsQueryable().Where(c => c.UserId == userId).ToListAsync();
-            return cartItems;         
+            return cartItems;
         }
         public async Task<CartItem?> AddToCartAsync(AddToCartRequestDto addToCartRequestDto)
         {
-            var cartItem = await unitOfWork.CartItemsRepository.GetAsQueryable().FirstOrDefaultAsync(u => 
+            var cartItem = await unitOfWork.CartItemsRepository.GetAsQueryable().FirstOrDefaultAsync(u =>
             u.ProductId == addToCartRequestDto.ProductId
             && u.VariantId == addToCartRequestDto.VariantId
             && u.UserId == addToCartRequestDto.UserId);
 
             // Product has already added to the cart.
-            if(cartItem != null)
+            if (cartItem != null)
             {
                 return null;
             }
 
+            // Adding new item to the cart.
             var addCartItem = new CartItem();
             mapper.Map(addToCartRequestDto, addCartItem);
             await unitOfWork.CartItemsRepository.AddAsync(addCartItem);
@@ -51,7 +46,7 @@ namespace BuisnessLogicLayer.Services
         public async Task<CartItem?> DeleteItemFromCartAsync(long cartItemId)
         {
             var deletedItem = await unitOfWork.CartItemsRepository.DeleteAsync(cartItemId);
-            if(deletedItem != null)
+            if (deletedItem != null)
             {
                 await unitOfWork.SaveAsync();
             }
@@ -60,7 +55,7 @@ namespace BuisnessLogicLayer.Services
         public async Task<CartItem?> UpdateProductQuantityAsync(UpdateProductQtyRequestDto updateProductQtyRequest)
         {
             var cartItem = await unitOfWork.CartItemsRepository.GetByIdAsync(updateProductQtyRequest.CartItemId);
-            if(cartItem != null)
+            if (cartItem != null)
             {
                 cartItem.Quantity = updateProductQtyRequest.ProductQuantity;
                 await unitOfWork.SaveAsync();

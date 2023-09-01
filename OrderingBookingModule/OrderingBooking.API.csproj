@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BuisnessLogicLayer\OrderingBooking.BL.csproj" />
-    <ProjectReference Include="..\EntityLayer\OrderingBooking.Entities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

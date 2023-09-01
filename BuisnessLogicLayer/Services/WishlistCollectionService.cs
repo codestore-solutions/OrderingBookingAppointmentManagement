@@ -2,20 +2,17 @@
 using DataAccessLayer.IRepository;
 using Entitites.Dto;
 using Entitites.Models;
-using EntityLayer.Common;
-using EntityLayer.Dto;
 using Microsoft.EntityFrameworkCore;
 using OrderingBooking.BL.IServices;
-using System.Net.Sockets;
 
 namespace OrderingBooking.BL.Services
 {
-    public class WishlistCollectionService: IWishlistCollectionService
+    public class WishlistCollectionService : IWishlistCollectionService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public WishlistCollectionService(IUnitOfWork unitOfWork,IMapper mapper)
+        public WishlistCollectionService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -56,7 +53,7 @@ namespace OrderingBooking.BL.Services
         public async Task<WishlistCollection?> DeleteCollectionAsync(long wishlistCollectionId)
         {
             var deletedCollection = await unitOfWork.WishlistCollectionRepository.DeleteAsync(wishlistCollectionId);
-            if(deletedCollection != null)
+            if (deletedCollection != null)
             {
                 await unitOfWork.SaveAsync();
             }

@@ -30,7 +30,6 @@ namespace OrderingBooking.API.Controllers
         [HttpPost("add-products")]
         [MapToApiVersion("1.0")]
         [ValidateModel]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> AddProductsToCollectionAsync(AddProductsToCollectionDto productsToCollectionDto)
         {
             var result = await wishListService.AddProductsToCollectionAsync(productsToCollectionDto);
@@ -48,7 +47,6 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpDelete("delete")]
         [MapToApiVersion("1.0")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> DeleteProductFromWishList([FromQuery][Required] long wishlistItemsId)
         {
             var result = await wishListService.DeleteProductFromWishlistAsync(wishlistItemsId);
@@ -68,7 +66,6 @@ namespace OrderingBooking.API.Controllers
         [HttpPut("update")]
         [MapToApiVersion("1.0")]
         [ValidateModel]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> UpdateProductsQuantityInCollectionAsync([FromQuery][Required] long wishlistItemsId, [FromBody][Required] UpdateQuantityDto quantityDto)
         {
             var result = await wishListService.UpdateQuantityAsync(wishlistItemsId, quantityDto);

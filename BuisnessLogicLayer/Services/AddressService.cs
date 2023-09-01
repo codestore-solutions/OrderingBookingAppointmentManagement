@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using DataAccessLayer.IRepository;
 using Entitites.Dto;
-using EntityLayer.Common;
-using EntityLayer.Dto;
 using EntityLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using OrderingBooking.BL.IServices;
 
 namespace OrderingBooking.BL.Services
@@ -52,11 +49,12 @@ namespace OrderingBooking.BL.Services
             return address;
         }
 
-        // Required for Order Processing Module for data mapping.
+
+        // Required in Order Processing Module for data mapping.
         public async Task<IEnumerable<Address>> GetMultipleAddressesAsync(List<long> addressIds)
         {
             var listOfAddresses = await unitOfWork.AddressRepository.GetAsQueryable()
-                .Where(entity => addressIds.Contains(entity.Id)).ToListAsync();
+            .Where(u => addressIds.Contains(u.Id)).ToListAsync();
             return listOfAddresses;
         }
 
@@ -71,7 +69,7 @@ namespace OrderingBooking.BL.Services
             return address;
         }
 
-
+        // Business logic for finding nearby addresses to users address using google geocoding service.
         /* public async Task<List<string>> GetNearbyAddresses(double latitude, double longitude, int radius = 30)
          {
              var apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude},{longitude}&radius={radius}&key={_apiKey}";
@@ -84,17 +82,18 @@ namespace OrderingBooking.BL.Services
 
              return result?.Results?.ConvertAll(r => r.FormattedAddress);
          }*/
+
+        /*public class GeocodingResponse
+        {
+            [JsonProperty("results")]
+            public List<Result> Results { get; set; }
+        }
+
+        public class Result
+        {
+            [JsonProperty("formatted_address")]
+            public string FormattedAddress { get; set; }
+        }*/
     }
 
-    /*public class GeocodingResponse
-    {
-        [JsonProperty("results")]
-        public List<Result> Results { get; set; }
-    }
-
-    public class Result
-    {
-        [JsonProperty("formatted_address")]
-        public string FormattedAddress { get; set; }
-    }*/
 }

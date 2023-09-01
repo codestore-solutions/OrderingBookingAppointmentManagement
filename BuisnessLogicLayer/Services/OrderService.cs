@@ -55,15 +55,13 @@ namespace OrderingBooking.BL.Services
                 }
                 // Number of Products in one order for same vendor.
                 newOrder.ProductCount = productCount;
-               // newOrder.ItemTotal    = itemTotal;
-                newOrder.CreatedDate  = DateTime.Now;
-                newOrder.UpdatedOn    = DateTime.Now;
+                // newOrder.ItemTotal    = itemTotal;   
+                newOrder.CreatedDate = newOrder.UpdatedOn = DateTime.Now;
                 // Invoice Amount Total
-               // newOrder.TotalInvoiceAmount = itemTotal + createOrderDto.TipAmount + createOrderDto.TaxesAmount + ordersforVendors.DeliveryCharges;
+                // newOrder.TotalInvoiceAmount = itemTotal + createOrderDto.TipAmount + createOrderDto.TaxesAmount + ordersforVendors.DeliveryCharges;
                 listOfOrders.Add(newOrder);
                 await unitOfWork.OrderRepository.AddAsync(newOrder);
                 await unitOfWork.SaveAsync();
-
                 // Creating order and then pushing it into the queue
                 var queueObj = new SendOrderToQueueDto
                 {
@@ -73,6 +71,7 @@ namespace OrderingBooking.BL.Services
                     shippingAddressId = newOrder.ShippingAddressId
                 };
 
+                // Adding order to queue for processing.
                 var body = JsonSerializer.Serialize(queueObj);
                 var message = new ServiceBusMessage(body);
                 await sender.SendMessageAsync(message);
@@ -85,10 +84,12 @@ namespace OrderingBooking.BL.Services
             .Include(c => c.OrderItems).OrderByDescending(c=>c.UpdatedOn).Skip((pageNumber-1)*limit).Take(limit).ToListAsync();
             return orders;
         }
+
+        // Order list required in order-processing Module.
         public async Task<IEnumerable<Order>> GetOrdersListAsync(List<long> orderIds)
         {
             var listOfOrders = await unitOfWork.OrderRepository.GetAsQueryable()
-                .Where(entity => orderIds.Contains(entity.OrderId)).ToListAsync();
+            .Where(entity => orderIds.Contains(entity.OrderId)).ToListAsync();
 
             return listOfOrders;
         }

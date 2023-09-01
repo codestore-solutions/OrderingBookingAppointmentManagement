@@ -1,10 +1,4 @@
-﻿using EntityLayer.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using static Entitites.Common.EnumConstants;
 
 namespace Entitites.Dto
@@ -28,7 +22,7 @@ namespace Entitites.Dto
         public string Country { get; set; } = null!;
 
         [Required]
-        [StringLength (10)]
+        [StringLength(10)]
         public string CountryCode { get; set; } = null!;
 
         [Required]
@@ -36,7 +30,7 @@ namespace Entitites.Dto
         public string PostalCode { get; set; } = null!;
 
         [Required]
-        [StringLength(15, MinimumLength =10)]
+        [StringLength(15, MinimumLength = 10)]
         [Phone]
         public string PhoneNumber { get; set; } = null!;
 

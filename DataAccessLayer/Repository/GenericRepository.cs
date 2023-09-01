@@ -1,11 +1,7 @@
 ﻿using DataAccessLayer.Data;
 using DataAccessLayer.IRepository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace DataAccessLayer.Repository
 {
@@ -30,12 +26,12 @@ namespace DataAccessLayer.Repository
         }
         public async Task<T?> GetByIdAsync(long id)
         {
-           return await _dbSet.FindAsync(id);  
+            return await _dbSet.FindAsync(id);
         }
         public async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-        }  
+        }
         public async Task<bool> AddRangeAsync(IEnumerable<T> entities)
         {
             await _dbSet.AddRangeAsync(entities);
@@ -58,7 +54,7 @@ namespace DataAccessLayer.Repository
         }
         public bool DeleteRange(IEnumerable<T> entities)
         {
-             _dbSet.RemoveRange(entities);
+            _dbSet.RemoveRange(entities);
             return true;
         }
 

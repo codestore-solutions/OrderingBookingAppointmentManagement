@@ -1,5 +1,4 @@
-﻿
-using OrderingBooking.Data.IRepository;
+﻿using OrderingBooking.Data.IRepository;
 
 namespace DataAccessLayer.IRepository
 {

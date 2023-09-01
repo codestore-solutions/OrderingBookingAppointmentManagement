@@ -14,7 +14,7 @@ namespace EntityLayer.Models
         [Range(1, long.MaxValue)]
         public long UserId { get; set; }
 
-        [Required] 
+        [Required]
         [Range(1, long.MaxValue)]
         public long ShippingAddressId { get; set; }
 
@@ -26,11 +26,10 @@ namespace EntityLayer.Models
         [Range(1, long.MaxValue)]
         public long VendorId { get; set; }
 
-        //
-      /*  public double ItemTotal { get; set; }
-        public double TotalInvoiceAmount { get; set; }
-        public double TaxesAmount { get; set; }*/
-        
+        /*  public double ItemTotal { get; set; }
+          public double TotalInvoiceAmount { get; set; }
+          public double TaxesAmount { get; set; }*/
+
         [Required]
         [Range(0.0, double.MaxValue)]
         public double DeliveryCharges { get; set; }
@@ -53,7 +52,7 @@ namespace EntityLayer.Models
         [Column(TypeName = "date")]
         public DateTime DeliveryDate { get; set; }
         public long DeliverySlotId { get; set; }
-       
+
         [Required]
         public PaymentMode paymentMode { get; set; }
 

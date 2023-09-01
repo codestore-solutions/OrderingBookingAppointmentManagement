@@ -27,7 +27,6 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpGet("getCollectionById")]
         [MapToApiVersion("1.0")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> GetWishlistCollectionById([FromQuery][Required] long wishListCollectionId)
         {
             var result = await wishlistCollectionService.GetWishlistCollectionById(wishListCollectionId);
@@ -43,7 +42,6 @@ namespace OrderingBooking.API.Controllers
         [HttpPost("add-collection")]
         [ValidateModel]
         [MapToApiVersion("1.0")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> AddNewCollection(WishlistCollectionDto collectionDto)
         {
             var result = await wishlistCollectionService.AddNewWishlistCollection(collectionDto);
@@ -61,7 +59,6 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpGet("get-all-collections")]
         [MapToApiVersion("1.0")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> GetAllCollectionsName([FromQuery][Required] long userId)
         {
             var result = await wishlistCollectionService.GetAllWishlistCollections(userId);
@@ -79,7 +76,6 @@ namespace OrderingBooking.API.Controllers
         /// <returns></returns>
         [HttpDelete]
         [MapToApiVersion("1.0")]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> DeleteCollectionAsync([FromQuery][Required] long wishlistCollectionId)
         {
             var result = await wishlistCollectionService.DeleteCollectionAsync(wishlistCollectionId);
@@ -99,7 +95,6 @@ namespace OrderingBooking.API.Controllers
         [HttpPut("update-collection-name")]
         [MapToApiVersion("1.0")]
         [ValidateModel]
-        [ServiceFilter(typeof(LoggingActionFilter))]
         public async Task<IActionResult> UpdateCollectionNameAsync([FromQuery] long wishlistCollectionId, [FromBody] UpdateCollectionNameDto updateCollectionNameDto)
         {
             var result = await wishlistCollectionService.UpdateCollectionNameAsync(wishlistCollectionId, updateCollectionNameDto);

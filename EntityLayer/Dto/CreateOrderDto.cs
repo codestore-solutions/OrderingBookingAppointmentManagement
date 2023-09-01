@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using static Entitites.Common.EnumConstants;
 
 namespace Entitites.Dto
@@ -28,19 +27,19 @@ namespace Entitites.Dto
         public long VariantId { get; set; }
 
         // Added New Column
-       /* [Required]
-        public double MRPPrice { get; set; }*/
+        /* [Required]
+         public double MRPPrice { get; set; }*/
 
         [Required]
         [Range(0, double.MaxValue)]
         public double Price { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue)]   
+        [Range(0, double.MaxValue)]
         public double Discount { get; set; }
 
         [Required]
-        [Range(1, int.MaxValue)]    
+        [Range(1, int.MaxValue)]
         public int Quantity { get; set; }
 
         [Required]
@@ -64,11 +63,10 @@ namespace Entitites.Dto
         [Range(1, long.MaxValue)]
         public long ShippingAddressId { get; set; }
 
-        [Range(0 , double.MaxValue)]     
+        [Range(0, double.MaxValue)]
         public double TipAmount { get; set; }
 
-        //
-       // public double TaxesAmount { get; set; }
+        // public double TaxesAmount { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime DeliveryDate { get; set; }
