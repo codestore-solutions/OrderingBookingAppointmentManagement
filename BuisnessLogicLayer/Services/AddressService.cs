@@ -21,8 +21,8 @@ namespace OrderingBooking.BL.Services
         public async Task<Address> AddAddressAsync(long userId, AddAddressDto addressDto)
         {
             var addNewAddress = new Address();
-            mapper.Map(addressDto, addNewAddress);
             addNewAddress.UserId = userId;
+            mapper.Map(addressDto, addNewAddress);
 
             await unitOfWork.AddressRepository.AddAsync(addNewAddress);
             await unitOfWork.SaveAsync();
@@ -94,6 +94,7 @@ namespace OrderingBooking.BL.Services
             [JsonProperty("formatted_address")]
             public string FormattedAddress { get; set; }
         }*/
+
     }
 
 }
