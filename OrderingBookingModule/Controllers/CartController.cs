@@ -3,9 +3,7 @@ using EntityLayer.Common;
 using EntityLayer.Dto;
 using Microsoft.AspNetCore.Mvc;
 using OrderingBooking.API.CustomActionFilter;
-using OrderingBooking.BL.Services;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 
 namespace OrderingBooking.API.Controllers
 {
@@ -30,13 +28,12 @@ namespace OrderingBooking.API.Controllers
         [MapToApiVersion("1.0")]
         public async Task<ActionResult<ResponseDto>> GetCartAsync([FromQuery][Required] long userId)
         {
-
             var result = await cartService.GetAllCartItemsAsync(userId);
             if (result.Any())
             {
-                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result , Message = StringConstant.SuccessMessage});
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.SuccessMessage });
             }
-            return NotFound(new { message = StringConstant.ResourceNotFoundError});
+            return NotFound(new { message = StringConstant.ResourceNotFoundError });
         }
 
         /// <summary>
@@ -52,9 +49,9 @@ namespace OrderingBooking.API.Controllers
             var result = await cartService.AddToCartAsync(addToCartRequestDto);
             if (result != null)
             {
-                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.AddedToCartMessage});
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.AddedToCartMessage });
             }
-            return BadRequest(new {message = StringConstant.AlreadyExistMessage});
+            return BadRequest(new { message = StringConstant.AlreadyExistMessage });
         }
 
         /// <summary>
@@ -70,9 +67,9 @@ namespace OrderingBooking.API.Controllers
             var result = await cartService.UpdateProductQuantityAsync(updateProductDto);
             if (result != null)
             {
-                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.QuanitityUpdatedMessage});
+                return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.QuanitityUpdatedMessage });
             }
-            return NotFound(new {message = StringConstant.ResourceNotFoundError});
+            return NotFound(new { message = StringConstant.ResourceNotFoundError });
         }
 
         /// <summary>
@@ -85,7 +82,7 @@ namespace OrderingBooking.API.Controllers
         public async Task<IActionResult> DeleteProductFromOrderLine([FromQuery][Required] long cartItemId)
         {
             var result = await cartService.DeleteItemFromCartAsync(cartItemId);
-            if(result != null)
+            if (result != null)
             {
                 return Ok(new ResponseDto { StatusCode = 200, Success = true, Data = result, Message = StringConstant.ItemRemovedMessage });
             }

@@ -3,11 +3,6 @@ using BuisnessLogicLayer.IServices;
 using DataAccessLayer.IRepository;
 using Entitites.Dto;
 using Entitites.Models;
-using EntityLayer.Common;
-using EntityLayer.Dto;
-using EntityLayer.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace BuisnessLogicLayer.Services
 {
@@ -20,76 +15,34 @@ namespace BuisnessLogicLayer.Services
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
-       
-        public async Task<ResponseDto> AddProductsToCollectionAsync(AddProductsToCollectionDto productsToCollectionDto)
+        public async Task<WishlistItems?> AddProductsToCollectionAsync(AddProductsToCollectionDto productsToCollectionDto)
         {
             var addNewWishlistItem = new WishlistItems();
             mapper.Map(productsToCollectionDto, addNewWishlistItem);
+            addNewWishlistItem.CreatedOn = DateTime.Now;
             await unitOfWork.WishListRepository.AddAsync(addNewWishlistItem);
             bool saveResult = await unitOfWork.SaveAsync();
 
-            return new ResponseDto
-            {
-                StatusCode = saveResult ? 200 : 500,
-                Success = saveResult,
-                Data = addNewWishlistItem,
-                Message = saveResult ? StringConstant.SuccessMessage : StringConstant.DatabaseMessage
-            };
+            return saveResult ? addNewWishlistItem : null;
         }
-        public async Task<ResponseDto> DeleteProductFromWishlistAsync(long wishlistCollectionId, long productId, long? varientId)
+        public async Task<WishlistItems?> DeleteProductFromWishlistAsync(long wishlistItemsId)
         {
-            var itemToBeDeleted = await unitOfWork.WishListRepository.GetAllAsQueryable().FirstOrDefaultAsync(p => p.WishListCollectionId == wishlistCollectionId
-            && p.ProductId == productId
-            && (varientId == null || p.VarientId == varientId));
-
-            if (itemToBeDeleted == null)
+            var itemToBeDeleted = await unitOfWork.WishListRepository.DeleteAsync(wishlistItemsId);
+            if (itemToBeDeleted != null)
             {
-                return new ResponseDto
-                {
-                    StatusCode = 400,
-                    Success = false,
-                    Data = StringConstant.InvalidInputError,
-                    Message = StringConstant.ErrorMessage
-                };
+                await unitOfWork.SaveAsync();
             }
-
-            await unitOfWork.WishListRepository.DeleteAsync(itemToBeDeleted.WishlistItemsId);
-            bool saveResult = await unitOfWork.SaveAsync();
-            return new ResponseDto
-            {
-                StatusCode = saveResult ? 200 : 500,
-                Success = saveResult,
-                Data = itemToBeDeleted,
-                Message = StringConstant.SuccessMessage
-            };
+            return itemToBeDeleted;
         }
-        public async Task<ResponseDto> UpdateProductsQuantityInCollectionAsync(long wishlistCollecttionId, UpdateQuantityDto quantityDto)
+        public async Task<WishlistItems?> UpdateQuantityAsync(long wishlistItemsId, UpdateQuantityDto quantityDto)
         {
-            var productItem = await unitOfWork.WishListRepository.GetAllAsQueryable().FirstOrDefaultAsync(u => u.WishListCollectionId == wishlistCollecttionId
-            && (quantityDto.VarientId == null || u.VarientId == quantityDto.VarientId)
-            && u.ProductId == quantityDto.ProductId);
-
-            if (productItem == null)
+            var wishlistItem = await unitOfWork.WishListRepository.GetByIdAsync(wishlistItemsId);
+            if (wishlistItem != null)
             {
-                return new ResponseDto
-                {
-                    StatusCode = 400,
-                    Success = false,
-                    Data = StringConstant.InvalidInputError,
-                    Message = StringConstant.ErrorMessage
-                };
+                wishlistItem.Quantity = quantityDto.Quantity;
+                await unitOfWork.SaveAsync();
             }
-            productItem.Quantity = quantityDto.ProductQuantity;
-            bool saveResult = await unitOfWork.SaveAsync();
-
-            return new ResponseDto
-            {
-                StatusCode = saveResult ? 200 : 500,
-                Success = saveResult,
-                Data = productItem,
-                Message = saveResult ? StringConstant.SuccessMessage : StringConstant.ErrorMessage
-            };
+            return wishlistItem;
         }
-
     }
 }

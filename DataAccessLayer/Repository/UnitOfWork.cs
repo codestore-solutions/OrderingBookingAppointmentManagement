@@ -1,24 +1,18 @@
 ﻿using DataAccessLayer.Data;
 using DataAccessLayer.IRepository;
-using Microsoft.EntityFrameworkCore;
 using OrderingBooking.Data.IRepository;
 using OrderingBooking.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly OrderDbContext dbContext;
-        public UnitOfWork(OrderDbContext dbContext) 
-        {          
+        public UnitOfWork(OrderDbContext dbContext)
+        {
             OrderRepository = new OrderRepository(dbContext);
             WishlistCollectionRepository = new WishlistCollectionRepository(dbContext);
-            WishListRepository =new WishListRepository(dbContext);
+            WishListRepository = new WishListRepository(dbContext);
             CartItemsRepository = new CartItemsRepository(dbContext);
             AddressRepository = new AddressRepository(dbContext);
             this.dbContext = dbContext;

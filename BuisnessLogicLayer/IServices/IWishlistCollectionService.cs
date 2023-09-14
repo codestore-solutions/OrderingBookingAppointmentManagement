@@ -1,20 +1,15 @@
 ﻿using Entitites.Dto;
-using EntityLayer.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Entitites.Models;
 
 namespace OrderingBooking.BL.IServices
 {
     public interface IWishlistCollectionService
     {
-        public Task<ResponseDto> GetWishlistCollectionById(long WishListCollectionId);
-        public Task<ResponseDto> AddNewWishlistCollection(WishlistCollectionDto collectionDto);
-        public Task<ResponseDto> GetAllWishlistCollections(long userId);
-        public Task<ResponseDto> DeleteCollectionAsync(long wishlistCollectionId);
-        public Task<ResponseDto> UpdateCollectionNameAsync(long wishlistCollectionId, UpdateCollectionNameDto updateCollectionNameDto);
+        public Task<WishlistCollection?> GetWishlistCollectionById(long WishListCollectionId);
+        public Task<WishlistCollection?> AddNewWishlistCollection(WishlistCollectionDto collectionDto);
+        public Task<IEnumerable<WishlistCollection>> GetAllWishlistCollections(long userId);
+        public Task<WishlistCollection?> DeleteCollectionAsync(long wishlistCollectionId);
+        public Task<WishlistCollection?> UpdateCollectionNameAsync(long wishlistCollectionId, UpdateCollectionNameDto updateCollectionNameDto);
 
     }
 }

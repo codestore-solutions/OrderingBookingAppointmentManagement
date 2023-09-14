@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using static Entitites.Common.EnumConstants;
 
 namespace EntityLayer.Models
@@ -31,10 +26,10 @@ namespace EntityLayer.Models
 
         [Required]
         [StringLength(50)]
-        public string Country { get; set; } = null !;
+        public string Country { get; set; } = null!;
 
         [Required]
-        [StringLength (20)]
+        [StringLength(20)]
         public string CountryCode { get; set; } = null!;
 
         [Required]

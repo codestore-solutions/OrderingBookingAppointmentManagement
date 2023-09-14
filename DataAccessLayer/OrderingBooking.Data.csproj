@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EntityLayer\Entitites.csproj" />
+    <ProjectReference Include="..\EntityLayer\OrderingBooking.Entities.csproj" />
   </ItemGroup>
 
 </Project>

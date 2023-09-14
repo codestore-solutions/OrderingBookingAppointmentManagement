@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using DataAccessLayer.IRepository;
 using Entitites.Dto;
-using EntityLayer.Common;
-using EntityLayer.Dto;
 using EntityLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using OrderingBooking.BL.IServices;
 
 namespace OrderingBooking.BL.Services
@@ -24,8 +21,8 @@ namespace OrderingBooking.BL.Services
         public async Task<Address> AddAddressAsync(long userId, AddAddressDto addressDto)
         {
             var addNewAddress = new Address();
-            mapper.Map(addressDto, addNewAddress);
             addNewAddress.UserId = userId;
+            mapper.Map(addressDto, addNewAddress);
 
             await unitOfWork.AddressRepository.AddAsync(addNewAddress);
             await unitOfWork.SaveAsync();
@@ -34,7 +31,7 @@ namespace OrderingBooking.BL.Services
 
         public async Task<IEnumerable<Address>> GetAllAddressesAsync(long userId)
         {
-            return await unitOfWork.AddressRepository.GetAllAsQueryable().Where(u => u.UserId == userId).ToListAsync();
+            return await unitOfWork.AddressRepository.GetAsQueryable().Where(u => u.UserId == userId).ToListAsync();
         }
 
         public async Task<Address?> GetAddressByIdAsync(long shippingAddressId)
@@ -52,20 +49,13 @@ namespace OrderingBooking.BL.Services
             return address;
         }
 
-        // Required for Order Processing Module for data mapping.
+
+        // Required in Order Processing Module for data mapping.
         public async Task<IEnumerable<Address>> GetMultipleAddressesAsync(List<long> addressIds)
         {
-            var addressesList = new List<Address>();
-
-            foreach (var addressId in addressIds)
-            {
-                var address = await unitOfWork.AddressRepository.GetByIdAsync(addressId);
-                if (address != null)
-                {
-                    addressesList.Add(address);
-                }
-            }
-            return addressesList;
+            var listOfAddresses = await unitOfWork.AddressRepository.GetAsQueryable()
+            .Where(u => addressIds.Contains(u.Id)).ToListAsync();
+            return listOfAddresses;
         }
 
         public async Task<Address?> UpdateAddressAsync(long addressId, UpdateAddressDto addressDto)
@@ -79,7 +69,7 @@ namespace OrderingBooking.BL.Services
             return address;
         }
 
-
+        // Business logic for finding nearby addresses to users address using google geocoding service.
         /* public async Task<List<string>> GetNearbyAddresses(double latitude, double longitude, int radius = 30)
          {
              var apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude},{longitude}&radius={radius}&key={_apiKey}";
@@ -92,17 +82,19 @@ namespace OrderingBooking.BL.Services
 
              return result?.Results?.ConvertAll(r => r.FormattedAddress);
          }*/
+
+        /*public class GeocodingResponse
+        {
+            [JsonProperty("results")]
+            public List<Result> Results { get; set; }
+        }
+
+        public class Result
+        {
+            [JsonProperty("formatted_address")]
+            public string FormattedAddress { get; set; }
+        }*/
+
     }
 
-    public class GeocodingResponse
-    {
-        [JsonProperty("results")]
-        public List<Result> Results { get; set; }
-    }
-
-    public class Result
-    {
-        [JsonProperty("formatted_address")]
-        public string FormattedAddress { get; set; }
-    }
 }

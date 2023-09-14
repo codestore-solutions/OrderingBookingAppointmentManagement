@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Entitites.Models;
 using EntityLayer.Models;
-using Entitites.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Data
 {
-    public class OrderDbContext: DbContext
+    public class OrderDbContext : DbContext
     {
-        public OrderDbContext(DbContextOptions dbContextOptions):base(dbContextOptions)
+        public OrderDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
-            
+
         }
 
         public DbSet<CartItem> CartItems { get; set; }
@@ -25,8 +25,7 @@ namespace DataAccessLayer.Data
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder
-           .UseLazyLoadingProxies() // Enables lazy loading
+            optionsBuilder.UseLazyLoadingProxies() // Enables lazy loading
            .UseSqlServer("name=ConnectionStrings:OrderingBookingConnectionString");
         }
 

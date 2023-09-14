@@ -1,10 +1,5 @@
 ﻿using EntityLayer.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Entitites.Common.EnumConstants;
 
 namespace Entitites.Models
@@ -22,14 +17,23 @@ namespace Entitites.Models
         [Range(1, long.MaxValue)]
         public long VariantId { get; set; }
 
+        // Added a new Column
+        /* [Required]
+         public double MRPPrice { get; set; }*/
+
+        /* [Required]
+         [Range(0, double.MaxValue)]
+         public double DiscountedPrice { get; set; } */              // Price after discount
+
         [Required]
         [Range(0, double.MaxValue)]
         public double Price { get; set; }
-        public double Discount { get; set; }
+        [Required]
+        public double Discount { get; set; }                 // Discounted Amount
 
         [Required]
         public int Quantity { get; set; }
-      
+
         [Required]
         public OrderStatus OrderStatus { get; set; }
 

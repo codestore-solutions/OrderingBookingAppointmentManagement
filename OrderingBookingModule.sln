@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingBooking.API", "Orde
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingBooking.BL", "BuisnessLogicLayer\OrderingBooking.BL.csproj", "{7844A637-0306-4898-A5C9-3FE165C70146}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entitites", "EntityLayer\Entitites.csproj", "{C5FEDA4C-FD34-4518-9E1F-E53630905195}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingBooking.Entities", "EntityLayer\OrderingBooking.Entities.csproj", "{C5FEDA4C-FD34-4518-9E1F-E53630905195}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderingBooking.Data", "DataAccessLayer\OrderingBooking.Data.csproj", "{11CF5214-14AD-40D5-A177-A960B3B99BE0}"
 EndProject
